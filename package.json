@@ -1,0 +1,177 @@
+{
+  "name": "kaudit",
+  "displayName": "kaudit",
+  "description": "a simple source code audit tool",
+  "version": "0.0.1",
+  "publisher": "urn1ce",
+  "license": "AGPL-3.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/urn1ce/vscode-kaudit/issues"
+  },
+  "bugs": {
+    "url": "https://github.com/urn1ce/vscode-kaudit/issues"
+  },
+  "engines": {
+    "vscode": "^1.75.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "keywords": [
+    "kaudit",
+    "analysis",
+    "audit"
+  ],
+  "icon": "media/kaudit.png",
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [      
+      {
+        "command": "kaudit.analyseWorkspace",
+        "title": "Analyse Workspace. Please make sure you have saved all changes to files.",
+        "icon": {
+          "light": "resources/light/refresh.svg",
+          "dark": "resources/dark/refresh.svg"
+        }
+      },
+      {
+        "command": "kaudit.matchInfoOfExplorerNodeTreeView",
+        "title": "Show details of current selected node match info",
+        "icon": {
+          "light": "resources/light/quill.svg",
+          "dark": "resources/dark/quill.svg"
+        }
+      },
+      {
+        "command": "kaudit.matchInfoOfExplorerNodeDetailTreeView",
+        "title": "Show details of current selected node match info",
+        "icon": {
+          "light": "resources/light/quill.svg",
+          "dark": "resources/dark/quill.svg"
+        }
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "kaudit.analyseWorkspace",
+          "when": "view == kaudit-explorer",
+          "group": "navigation"
+        },
+        {
+          "command": "kaudit.matchInfoOfExplorerNodeTreeView",
+          "when": "view == kaudit-explorer",
+          "group": "navigation"
+        },
+        {
+          "command": "kaudit.matchInfoOfExplorerNodeDetailTreeView",
+          "when": "view == kaudit-explorer-detail",
+          "group": "navigation"
+        }
+      ]
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "kaudit-container",
+          "title": "Kaudit Explorer",
+          "icon": "media/file_search.svg"
+        }
+      ]      
+    },
+    "views": {
+      "kaudit-container": [
+        {
+          "id": "kaudit-explorer",
+          "name": "Analysis",
+          "when": "kauditCompatibleWorkspace"
+        },
+        {
+          "id": "kaudit-explorer-detail",
+          "name": "Outline",
+          "when": "kauditCompatibleWorkspace"
+        }
+      ]
+    },
+    "configuration": [
+			{
+				"id": "KauditConfiguration",
+				"title": "Kaudit Configuration",
+				"properties": {
+          "conf.Kaudit.lineSeparator":{
+            "type": "string",
+            "enum": [
+							"\\n",
+							"\\r\\n",
+							"\\r"
+						],
+            "default":"\\n",
+            "order": 1,
+            "description": "Used for separating file line, rule match based on line, default is \\n",
+            "scope": "application"
+          },
+          "conf.Kaudit.supportLangs": {
+						"type": "object",               
+            "default":{"java":["java"], "perl":["pl","pm"], "php":["php","php3","php4","php5","php6","php7","pht","phtml"], "python":["py"]},
+            "order": 2,
+						"description": "Support Langs that kaudit will handle,need reboot vscode if modified, lang key must from https://code.visualstudio.com/docs/languages/identifiers",
+            "scope": "application"
+					},
+          "conf.Kaudit.customRules":{
+            "type": "object",               
+            "default":{},
+						"description": "you can define match rules by your self, the default rule see https://....., it's easy to understand and custom rules must follow the same format",
+            "order": 3,
+            "scope": "application"
+          },
+          "conf.Kaudit.disableDefaultRules":{
+            "type":"boolean",
+            "default":false,
+            "description": "When true, match will only use custom rules. When false, match will use default rules and custom rules. Default is false. If you enable this, you usually need modify  SupportLangs and CustomRules",
+            "order": 4,
+            "scope": "application"
+          },
+          "conf.Kaudit.enableAutoFileLangDetect":{
+            "type":"boolean",
+            "default":true,
+            "description": "When true, program first use fileExtension in supportLangs to determine fileLang, if no extension match then analysis if filesize <= checkFileLangOfFileSizeLimit, if true read first line(if lineLenth >= 256, only handle first 256bytes) of file judge if there is lang key(from supportLangs lang key) in line, if true, judge the file language as prev lang key and apply lang match rule,otherwise program will do nothing to the file.Often used in case that there are many cgi files(maybe perl/python/php.., we can't use extension to determine filetype).Default is true.Note: perhaps have little wrong with judge results because of judge method,but not too bad.Maybe new methods will be implemented in the future..",
+            "order": 5,
+            "scope": "application"
+          },
+          "conf.Kaudit.checkFileLangOfFileSizeLimit":{
+            "type": "integer",
+            "default": 524288,
+            "order": 6,
+            "description": "If a file lang can't determine by supportLangs extension, and file size <= checkFileLangOfFileSizeLimit, kaudit will check the first line of file to determine file lang(detail see enableAutoFileLangDetect). Default limit: 512*1024 bytes and only work on enableAutoFileLangDetect is true .",
+            "scope": "application"
+          }
+				}
+			}
+		]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.75.0",
+    "@types/glob": "^8.0.0",
+    "@types/mocha": "^10.0.1",
+    "@types/node": "16.x",
+    "@typescript-eslint/eslint-plugin": "^5.45.0",
+    "@typescript-eslint/parser": "^5.45.0",
+    "eslint": "^8.28.0",
+    "glob": "^8.0.3",
+    "mocha": "^10.1.0",
+    "typescript": "^4.9.3",
+    "@vscode/test-electron": "^2.2.0"
+  }
+}

@@ -1,0 +1,1302 @@
+{
+    "php": [
+        {
+            "group_name": "Arbitrary Jump or HTTP Header Pollution",
+            "regex": "(\\bheader\\s{0,5}\\(.{0,30}|window.location.href\\s{0,5}=\\s{0,5})\\$_(POST|GET|REQUEST|SERVER)",
+            "regex_flag": "ig",
+            "regex_match_cond": {},
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "Arbitrary Jump or HTTP Header Pollution",
+                    "description": "The header function or js location has controllable parameters, and there is an arbitrary jump or http header pollution vulnerability",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "任意跳转或http头污染漏洞",
+                    "description": "header函数或者js location有可控参数，存在任意跳转或http头污染漏洞",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "Arbitrary file read",
+            "regex": "\\b(file_get_contents|fopen|readfile|fgets|fgetss|fread|parse_ini_file|highlight_file|fgetss|show_source)\\s{0,5}\\(.{0,40}\\$\\w{1,15}((\\[[\"']|\\[)\\${0,1}[\\w\\[\\]\"']{0,30}){0,1}",
+            "regex_flag": "ig",
+            "regex_match_cond": {},
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "Arbitrary file read",
+                    "description": "Variable exists in read file function, there may be arbitrary file read vulnerability",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "任意文件读取漏洞",
+                    "description": "读取文件函数中存在变量，可能存在任意文件读取漏洞",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "Arbitrary file read / delete / modify / write",
+            "regex": "\\b(unlink|copy|fwrite|file_put_contents|bzopen)\\s{0,10}\\(.{0,40}\\$\\w{1,20}((\\[[\"']|\\[)\\${0,1}[\\w\\[\\]\"']{0,30}){0,1}",
+            "regex_flag": "ig",
+            "regex_match_cond": {},
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "Arbitrary file read / delete / modify / write",
+                    "description": "There are variables in the file operation function, and there may be any file read / delete / modify / write vulnerabilities",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "任意文件读取/删除/修改/写入等漏洞",
+                    "description": "文件操作函数中存在变量，可能存在任意文件读取/删除/修改/写入等漏洞",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "Code execution",
+            "regex": "\\bpreg_replace\\(\\s{0,5}.*/[is]{0,2}e[is]{0,2}[\"']\\s{0,5},(.*\\$.*,|.*,.*\\$)",
+            "regex_flag": "ig",
+            "regex_match_cond": {},
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "Code execution",
+                    "description": "/e mode of preg_replace, with controllable variables, code execution vulnerability may exist",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "代码执行漏洞",
+                    "description": "preg_replace的/e模式，且有可控变量，可能存在代码执行漏洞",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "Code execution",
+            "regex": "\\bcall_user_func(_array){0,1}\\(\\s{0,5}\\$\\w{1,15}((\\[[\"']|\\[)\\${0,1}[\\w\\[\\]\"']{0,30}){0,1}",
+            "regex_flag": "ig",
+            "regex_match_cond": {},
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "Code execution",
+                    "description": "call_user_func function parameter contains variables, code execution vulnerability may exist",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "代码执行漏洞",
+                    "description": "call_user_func函数参数包含变量，可能存在代码执行漏洞",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "Code execution",
+            "regex": "\\$\\w{1,20}((\\[[\"']|\\[)\\${0,1}[\\w\\[\\]\"']{0,30}){0,1}\\s{0,5}\\(\\s{0,5}\\$_(POST|GET|REQUEST|SERVER)\\[.{1,20}\\]",
+            "regex_flag": "ig",
+            "regex_match_cond": {},
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "Code execution",
+                    "description": "There may be a code execution vulnerability, or here is a backdoor",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "代码执行漏洞",
+                    "description": "可能存在代码执行漏洞,或者此处是后门",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "Code execution",
+            "regex": "\\barray_map\\s{0,4}\\(\\s{0,4}.{0,20}\\$\\w{1,20}((\\[[\"']|\\[)\\${0,1}[\\w\\[\\]\"']{0,30}){0,1}\\s{0,4}.{0,20},",
+            "regex_flag": "ig",
+            "regex_match_cond": {},
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "Code execution",
+                    "description": "The array_map parameter contains variables. Controllable variables may lead to code execution vulnerabilities.",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "代码执行漏洞",
+                    "description": "array_map参数包含变量，变量可控可能会导致代码执行漏洞",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "Code execution",
+            "regex": "\\b(eval|assert)\\s{0,10}\\(.{0,60}\\$\\w{1,20}((\\[[\"']|\\[)\\${0,1}[\\w\\[\\]\"']{0,30}){0,1}",
+            "regex_flag": "ig",
+            "regex_match_cond": {},
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "Code execution",
+                    "description": "Variables in eval or assert function, code execution vulnerabilities may exist",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "代码执行漏洞",
+                    "description": "eval或者assert函数中存在变量，可能存在代码执行漏洞",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "Code execution vulnerabilities may exist",
+            "regex": "\\b(create_function|array_filter|usort|uasort)\\s{0,10}\\(.{0,60}\\$\\w{1,20}",
+            "regex_flag": "ig",
+            "regex_match_cond": {},
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "Code execution vulnerabilities may exist",
+                    "description": "code execution vulnerabilities may exist",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "代码执行漏洞",
+                    "description": "可能存在代码执行漏洞",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "Command execution",
+            "regex": "\\b(system|passthru|pcntl_exec|shell_exec|escapeshellcmd|exec|proc_open|popen|expect_popen)\\s{0,10}\\(.{0,40}\\$\\w{1,20}((\\[[\"']|\\[)\\${0,1}[\\w\\[\\]\"']{0,30}){0,1}",
+            "regex_flag": "ig",
+            "regex_match_cond": {},
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "Command execution",
+                    "description": "There are variables in the command execution function, there may be arbitrary command execution vulnerabilities",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "命令执行漏洞",
+                    "description": "命令执行函数中存在变量，可能存在任意命令执行漏洞",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "Command execution",
+            "regex": "`\\$\\w{1,20}((\\[[\"']|\\[)\\${0,1}[\\w\\[\\]\"']{0,30}){0,1}`",
+            "regex_flag": "ig",
+            "regex_match_cond": {},
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "Command execution",
+                    "description": "``Backquotes contain variables, and controllable variables can lead to command execution vulnerabilities",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "命令执行漏洞",
+                    "description": "``反引号中包含变量，变量可控会导致命令执行漏洞",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "Command execution",
+            "regex": "\\bssh2_exec\\s*?\\(.*?,[\"']\\s{0,10}\\$\\w{1,20}((\\[[\"']|\\[)\\${0,1}[\\w\\[\\]\"']{0,30}){0,1}[\"']",
+            "regex_flag": "ig",
+            "regex_match_cond": {},
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "Command execution",
+                    "description": "There are variables in the command execution function, there may be arbitrary command execution vulnerabilities",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "命令执行漏洞",
+                    "description": "命令执行函数中存在变量，可能存在任意命令执行漏洞",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "Deserialization",
+            "regex": "\\bunserialize\\s*?\\(\\s{0,10}\\$\\w{1,20}((\\[[\"']|\\[)\\${0,1}[\\w\\[\\]\"']{0,30}){0,1}",
+            "regex_flag": "ig",
+            "regex_match_cond": {},
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "Deserialization",
+                    "description": "unserialize parameter contains variables, which may have a deserialization vulnerability",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "反序列化漏洞",
+                    "description": "unserialize参数包含变量，可能存反序列化漏洞",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "Env. Variable coverage",
+            "regex": "\\bputenv\\s*?\\(\\s{0,10}\\$\\w{1,30}",
+            "regex_flag": "ig",
+            "regex_match_cond": {},
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "Env. Variable coverage",
+                    "description": "putenv was called, there may be a variable coverage vulnerability",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "环境变量覆盖漏洞",
+                    "description": "调用了putenv,可能存在变量覆盖漏洞",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "File inclusion",
+            "regex": "\\b(include|include_once|require|require_once|parsekit_compile_file|php_check_syntax|runkit_import|virtual)(\\s{1,5}|\\s{0,5}\\().{0,60}\\$(?!.*(this->))\\w{1,20}((\\[[\"']|\\[)\\${0,1}[\\w\\[\\]\"']{0,30}){0,1}",
+            "regex_flag": "ig",
+            "regex_match_cond": {},
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "File inclusion",
+                    "description": "There are variables in the file include function, there may be a file include vulnerability",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "文件包含漏洞",
+                    "description": "文件包含函数中存在变量,可能存在文件包含漏洞",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "File upload exists",
+            "regex": "\\bmove_uploaded_file\\s{0,5}\\(",
+            "regex_flag": "ig",
+            "regex_match_cond": {},
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "File upload exists",
+                    "description": "File upload exists, pay attention to whether the upload type is controllable",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "存在文件上传",
+                    "description": "存在文件上传，注意上传类型是否可控",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "GPC bypass",
+            "regex": "^(?!.*\\baddslashes).{0,40}\\b((raw){0,1}urldecode|stripslashes)\\s{0,5}\\(.{0,60}\\$\\w{1,20}((\\[[\"']|\\[)\\${0,1}[\\w\\[\\]\"']{0,30}){0,1}",
+            "regex_flag": "ig",
+            "regex_match_cond": {},
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "GPC bypass",
+                    "description": "urldecode bypasses GPC, stripslashes will cancel GPC escape characters",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "GPC绕过",
+                    "description": "urldecode绕过GPC,stripslashes会取消GPC转义字符",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "LDAP injection",
+            "regex": "\\bldap_search\\s*?\\(.*?,.*?,\\s{0,10}\\$\\w{1,20}((\\[[\"']|\\[)\\${0,1}[\\w\\[\\]\"']{0,30}){0,1}",
+            "regex_flag": "ig",
+            "regex_match_cond": {},
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "LDAP injection",
+                    "description": "ldap_search parameter contains variables, LDAP injection vulnerability may exist",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "LDAP注入漏洞",
+                    "description": "ldap_search参数包含变量，可能存在LDAP注入漏洞",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "SQL injection",
+            "regex": "[\"'](HTTP_CLIENT_IP|HTTP_X_FORWARDED_FOR|HTTP_REFERER)[\"']",
+            "regex_flag": "ig",
+            "regex_match_cond": {},
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "SQL injection",
+                    "description": "The method of obtaining the IP address can be forged, HTTP_REFERER can be forged, and SQL injection and other vulnerabilities are commonly caused.",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "SQL注入漏洞",
+                    "description": "获取IP地址方式可伪造，HTTP_REFERER可伪造，常见引发SQL注入等漏洞",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "SQL injection",
+            "regex": "select\\s{1,4}.{1,60}from.{1,50}\\bwhere\\s{1,3}.{1,50}=[\"\\s\\.]{0,10}\\$\\w{1,20}((\\[[\"']|\\[)\\${0,1}[\\w\\[\\]\"']{0,30}){0,1}",
+            "regex_flag": "ig",
+            "regex_match_cond": {},
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "SQL injection",
+                    "description": "The condition variable in the SQL statement select is not protected by single quotes, and there may be a SQL injection vulnerability",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "SQL注入漏洞",
+                    "description": "SQL语句select中条件变量无单引号保护，可能存在SQL注入漏洞",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "SQL injection",
+            "regex": "delete\\s{1,4}from.{1,20}\\bwhere\\s{1,3}.{1,30}=[\"\\s\\.]{0,10}\\$\\w{1,20}((\\[[\"']|\\[)\\${0,1}[\\w\\[\\]\"']{0,30}){0,1}",
+            "regex_flag": "ig",
+            "regex_match_cond": {},
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "SQL injection",
+                    "description": "The condition variable in the SQL statement delete is not protected by single quotes, and there may be a SQL injection vulnerability",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "SQL注入漏洞",
+                    "description": "SQL语句delete中条件变量无单引号保护，可能存在SQL注入漏洞",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "SQL injection",
+            "regex": "insert\\s{1,5}into\\s{1,5}.{1,60}\\$\\w{1,20}((\\[[\"']|\\[)\\${0,1}[\\w\\[\\]\"']{0,30}){0,1}",
+            "regex_flag": "ig",
+            "regex_match_cond": {},
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "SQL injection",
+                    "description": "The condition variable in the SQL statement insert is not protected by single quotes, and there may be a SQL injection vulnerability",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "SQL注入漏洞",
+                    "description": "SQL语句insert中插入变量无单引号保护，可能存在SQL注入漏洞",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "SQL injection",
+            "regex": "update\\s{1,4}.{1,30}\\s{1,3}set\\s{1,5}.{1,60}\\$\\w{1,20}((\\[[\"']|\\[)\\${0,1}[\\w\\[\\]\"']{0,30}){0,1}",
+            "regex_flag": "ig",
+            "regex_match_cond": {},
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "SQL injection",
+                    "description": "The condition variable in the SQL statement update is not protected by single quotes, and there may be a SQL injection vulnerability",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "SQL注入漏洞",
+                    "description": "SQL语句update中条件变量无单引号保护，可能存在SQL注入漏洞",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "SSRF",
+            "regex": "\\bcurl_setopt\\s*?\\(.*,\\s*CURLOPT_URL\\s*,\\s{0,10}\\$\\w{1,20}((\\[[\"']|\\[)\\${0,1}[\\w\\[\\]\"']{0,30}){0,1}\\)",
+            "regex_flag": "ig",
+            "regex_match_cond": {},
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "SSRF",
+                    "description": "curl parameter contains variables, SSRF vulnerability may exist",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "SSRF漏洞",
+                    "description": "curl参数包含变量，可能存在SSRF漏洞",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "SSRF",
+            "regex": "\\bget_headers\\s*?\\(\\s{0,10}\\$\\w{1,20}((\\[[\"']|\\[)\\${0,1}[\\w\\[\\]\"']{0,30}){0,1}",
+            "regex_flag": "ig",
+            "regex_match_cond": {},
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "SSRF",
+                    "description": "get_headers parameter contains variables, SSRF vulnerability may exist",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "SSRF漏洞",
+                    "description": "get_headers参数包含变量，可能存在SSRF漏洞",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "SSRF",
+            "regex": "\\bfsockopen\\s*?\\(\\s{0,10}\\$\\w{1,20}((\\[[\"']|\\[)\\${0,1}[\\w\\[\\]\"']{0,30}){0,1}",
+            "regex_flag": "ig",
+            "regex_match_cond": {},
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "SSRF",
+                    "description": "fsockopen parameter contains variables, SSRF vulnerability may exist",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "SSRF漏洞",
+                    "description": "fsockopen参数包含变量，可能存在SSRF漏洞",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "Sensitive information disclosure",
+            "regex": "\\bphpinfo\\s{0,5}\\(\\s{0,5}\\)",
+            "regex_flag": "ig",
+            "regex_match_cond": {},
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "Sensitive information disclosure",
+                    "description": "phpinfo () function, there may be sensitive information disclosure vulnerability",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "敏感信息泄露漏洞",
+                    "description": "phpinfo()函数，可能存在敏感信息泄露漏洞",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "Unsafe random number",
+            "regex": "\\buniqid\\s?\\(",
+            "regex_flag": "ig",
+            "regex_match_cond": {},
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "Unsafe random number",
+                    "description": "uniqid is generated based on timestamps and belongs to a pseudo-random generator. It is not recommended",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "不安全的随机数",
+                    "description": "uniqid基于时间戳生成的，属于伪随机生成器，不建议使用",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "Variable coverage",
+            "regex": "\\b(mb_){0,1}parse_str\\s{0,10}\\(.{0,40}\\$\\w{1,20}((\\[[\"']|\\[)\\${0,1}[\\w\\[\\]\"']{0,30}){0,1}",
+            "regex_flag": "ig",
+            "regex_match_cond": {},
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "Variable coverage",
+                    "description": "There are variables in the parse_str function, there may be a variable coverage vulnerability",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "变量覆盖漏洞",
+                    "description": "parse_str函数中存在变量,可能存在变量覆盖漏洞",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "Variable coverage",
+            "regex": "\\${{0,1}\\$\\w{1,20}((\\[[\"']|\\[)\\${0,1}[\\w\\[\\]\"']{0,30}){0,1}\\s{0,4}=\\s{0,4}.{0,20}\\$\\w{1,20}((\\[[\"']|\\[)\\${0,1}[\\w\\[\\]\"']{0,30}){0,1}",
+            "regex_flag": "ig",
+            "regex_match_cond": {},
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "Variable coverage",
+                    "description": "Double $$ symbol may have variable coverage vulnerability",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "变量覆盖漏洞",
+                    "description": "双$$符号可能存在变量覆盖漏洞",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "Variable coverage",
+            "regex": "\\b(extract)\\s{0,5}\\(.{0,30}\\$\\w{1,20}((\\[[\"']|\\[)\\${0,1}[\\w\\[\\]\"']{0,30}){0,1}\\s{0,5},{0,1}\\s{0,5}(EXTR_OVERWRITE){0,1}\\s{0,5}\\)",
+            "regex_flag": "ig",
+            "regex_match_cond": {},
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "Variable coverage",
+                    "description": "There are variables in the extract function, and there may be a variable coverage vulnerability",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "变量覆盖漏洞",
+                    "description": "extract函数中存在变量，可能存在变量覆盖漏洞",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "Variable coverage",
+            "regex": "\\bimport_request_variables\\s*?\\(",
+            "regex_flag": "ig",
+            "regex_match_cond": {},
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "Variable coverage",
+                    "description": "import_request_variables was called, there may be a variable coverage vulnerability",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "变量覆盖漏洞",
+                    "description": "调用了import_request_variables,可能存在变量覆盖漏洞",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "Weakly typed comparison",
+            "regex": "\\bsha1\\s*?\\(\\s{0,10}\\$\\w{1,30}",
+            "regex_flag": "ig",
+            "regex_match_cond": {},
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "Weakly typed comparison",
+                    "description": "If the passed value is an array, it may cause bypass",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "弱类型比较",
+                    "description": "如果传入的值为数组则可能导致绕过",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "Weakly typed comparison",
+            "regex": "(\\$\\w{1,30}\\s*?(==|!=)\\s*?\\md5\\(|\\bmd5\\(.{1,30}(==|!=)\\s*?\\$\\w{1,30})",
+            "regex_flag": "ig",
+            "regex_match_cond": {},
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "Weakly typed comparison",
+                    "description": "There may be weakly typed comparisons",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "弱类型比较",
+                    "description": "可能存在弱类型比较",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "Weakly typed comparison",
+            "regex": "(\\$\\w{1,30}\\s*?(==|!=)\\s*?\\d+|\\d+\\s*?(==|!=)\\s*?\\$\\w{1,30})",
+            "regex_flag": "ig",
+            "regex_match_cond": {},
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "Weakly typed comparison",
+                    "description": "There may be weakly typed comparisons",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "弱类型比较",
+                    "description": "可能存在弱类型比较",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "Weakly typed comparison",
+            "regex": "\\b(is_numeric|in_array)\\s*?\\(\\s{0,10}\\$\\w{1,30}",
+            "regex_flag": "ig",
+            "regex_match_cond": {},
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "Weakly typed comparison",
+                    "description": "There may be weakly typed comparisons",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "弱类型比较",
+                    "description": "可能存在弱类型比较",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "XSS",
+            "regex": "\\b(echo|print|print_r|exit|die|printf|vprintf|trigger_error|user_error|odbc_result_all|ovrimos_result_all|ifx_htmltbl_result)\\s{0,5}\\({0,1}.{0,60}\\$_(POST|GET|REQUEST|SERVER)",
+            "regex_flag": "ig",
+            "regex_match_cond": {},
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "XSS",
+                    "description": "There are controllable variables in the output such as echo, there may be XSS vulnerabilities",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "XSS漏洞",
+                    "description": "echo等输出中存在可控变量，可能存在XSS漏洞",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "XXE",
+            "regex": "\\b(simplexml_load_file|simplexml_load_string)\\s*?\\(\\s{0,10}\\$\\w{1,20}((\\[[\"']|\\[)\\${0,1}[\\w\\[\\]\"']{0,30}){0,1}",
+            "regex_flag": "ig",
+            "regex_match_cond": {},
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "XXE",
+                    "description": "simplexml_load_string and other function parameters contain variables, there may be XXE vulnerabilities",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "XXE漏洞",
+                    "description": "simplexml_load_string等函数参数包含变量，可能存在XXE漏洞",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "phar deserialization",
+            "regex": "\\b(fileatime|filectime|file_exists|file_get_contents|file_put_contents|file|filegroup|fopen)\\s*?\\(\\s{0,10}\\$\\w{1,30}",
+            "regex_flag": "ig",
+            "regex_match_cond": {},
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "phar deserialization",
+                    "description": "There may be phar deserialization",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "phar反序列化",
+                    "description": "可能存在phar反序列化",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "phar deserialization",
+            "regex": "\\b(fileinode|filemtime|fileowner|fileperms|is_dir|is_executable|is_file|is_link)\\s*?\\(\\s{0,10}\\$\\w{1,30}",
+            "regex_flag": "ig",
+            "regex_match_cond": {},
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "phar deserialization",
+                    "description": "There may be phar deserialization",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "phar反序列化",
+                    "description": "可能存在phar反序列化",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "phar deserialization",
+            "regex": "\\b(is_readable|is_writable|is_writeable|parse_ini_file|copy|unlink|stat|readfile)\\s*?\\(\\s{0,10}\\$\\w{1,30}",
+            "regex_flag": "ig",
+            "regex_match_cond": {},
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "phar deserialization",
+                    "description": "There may be phar deserialization",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "phar反序列化",
+                    "description": "可能存在phar反序列化",
+                    "detail_url": ""
+                }
+            }
+        }
+    ],
+    "perl": [
+        {
+            "group_name": "Code execution",
+            "regex": "\\b(eval)\\s*?\\(.{0,100}(\\$|@)",
+            "regex_flag": "ig",
+            "regex_match_cond": {},
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "Code execution",
+                    "description": "function parameter contains variables, code execution vulnerability may exist",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "代码执行漏洞",
+                    "description": "代码执行函数中存在变量，可能存在代码执行漏洞",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "Code execution",
+            "regex": "\\b(eval)\\s*?.{0,100}(\\$|@)",
+            "regex_flag": "ig",
+            "regex_match_cond": {},
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "Code execution",
+                    "description": "function parameter contains variables, code execution vulnerability may exist",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "代码执行漏洞",
+                    "description": "代码执行函数中存在变量，可能存在代码执行漏洞",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "Command execution",
+            "regex": "\\b(system|exec|readpipe|open)\\s*?\\(.{0,100}(\\$|@)",
+            "regex_flag": "ig",
+            "regex_match_cond": {},
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "Command execution",
+                    "description": "There are variables in the command execution function, there may be arbitrary command execution vulnerabilities",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "命令执行漏洞",
+                    "description": "命令执行函数中存在变量，可能存在任意命令执行漏洞",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "Command execution",
+            "regex": "\\b(system|exec|readpipe|open)\\s*?.{0,100}(\\$|@)",
+            "regex_flag": "ig",
+            "regex_match_cond": {},
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "Command execution",
+                    "description": "There are variables in the command execution function, there may be arbitrary command execution vulnerabilities",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "命令执行漏洞",
+                    "description": "命令执行函数中存在变量，可能存在任意命令执行漏洞",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "Command execution",
+            "regex": "`.*?(\\$|@)\\w{1,30}.*`",
+            "regex_flag": "ig",
+            "regex_match_cond": {},
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "Command execution",
+                    "description": "There are variables in the command execution function, there may be arbitrary command execution vulnerabilities",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "命令执行漏洞",
+                    "description": "命令执行函数中存在变量，可能存在任意命令执行漏洞",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "Regular match expression",
+            "regex": "\\s*?=~.*?/.{0,3}e",
+            "regex_flag": "ig",
+            "regex_match_cond": {},
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "Regular match expression",
+                    "description": "Regular match expression execute expression",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "正则匹配表达式",
+                    "description": "正则匹配表达式执行表达式",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "SQL query operation",
+            "regex": "\\b(select|update|insert|delete)\\s+.*?(\\$|@)\\w{1,30}",
+            "regex_flag": "ig",
+            "regex_match_cond": {},
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "SQL query operation",
+                    "description": "Can lead to SQL injection",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "SQL查询操作",
+                    "description": "可能导致SQL注入",
+                    "detail_url": ""
+                }
+            }
+        }
+    ],
+    "python": [
+        {
+            "group_name": "Code execution",
+            "regex": "\\b(eval|eval_r|exec|execfile)\\(",
+            "regex_flag": "ig",
+            "regex_match_cond": {},
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "Code execution",
+                    "description": "A function that executes code is called, a code execution vulnerability may exist",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "代码执行漏洞",
+                    "description": "调用了执行命令的函数，可能存在命令执行漏洞",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "Command execution",
+            "regex": "\\b(os\\.system|os\\.popen|commands\\.getoutput|commands\\.getstatusoutput|subprocess\\.call|subprocess\\.Popen|subprocess\\.check_call|subprocess\\.check_output|utils\\.execute|utils\\.execute_with_timeout)\\(",
+            "regex_flag": "ig",
+            "regex_match_cond": {},
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "Command execution",
+                    "description": "A function that executes a command is called, a command execution vulnerability may exist",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "命令执行漏洞",
+                    "description": "调用了执行命令的函数，可能存在命令执行漏洞",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "Deserialization",
+            "regex": "\\b(pickle|cPickle|yaml)\\.(load|dump|loads|dumps)\\(",
+            "regex_flag": "ig",
+            "regex_match_cond": {},
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "Deserialization",
+                    "description": "There are serialization operations, and there may be a deserialization vulnerability",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "反序列化漏洞",
+                    "description": "存在序列化操作，可能存在反序列化漏洞",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "File deletion",
+            "regex": "\\b(os\\.remove|os\\.unlink|os\\.rmdir|os\\.removedirs|shutil\\.rmtree)\\(",
+            "regex_flag": "ig",
+            "regex_match_cond": {},
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "File deletion",
+                    "description": "A function to delete a file was called, a file deletion vulnerability may exist",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "文件删除漏洞",
+                    "description": "调用了删除文件的函数，可能存在文件删除漏洞",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "File operations",
+            "regex": "\\b(\\.read|\\.write|files\\.get|\\.parse)\\(",
+            "regex_flag": "ig",
+            "regex_match_cond": {},
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "File operations",
+                    "description": "Can lead to arbitrary file reads and writes",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "文件操作",
+                    "description": "可能导致任意文件读写",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "Logical problem",
+            "regex": "\\b(path\\.join)\\(",
+            "regex_flag": "ig",
+            "regex_match_cond": {},
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "Logical problem",
+                    "description": "may cause path rewrite",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "逻辑问题",
+                    "description": "可能导致路径覆盖",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "SQL query operation",
+            "regex": "\\b(select|update|insert|delete)\\s+",
+            "regex_flag": "ig",
+            "regex_match_cond": {},
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "SQL query operation",
+                    "description": "Can lead to SQL injection",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "SQL查询操作",
+                    "description": "可能导致SQL注入",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "SSRF",
+            "regex": "\\b(\\.setopt|\\.urlopen)\\(",
+            "regex_flag": "ig",
+            "regex_match_cond": {},
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "SSRF",
+                    "description": "May cause SSRF",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "SSRF",
+                    "description": "可能导致SSRF",
+                    "detail_url": ""
+                }
+            }
+        }
+    ],
+    "java": [
+        {
+            "group_name": "Auth Bypass",
+            "regex": "\\.(getRequestURI|forward)\\(",
+            "regex_flag": "ig",
+            "regex_match_cond": {},
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "Auth Bypass",
+                    "description": "Auth Bypass vulnerabilities may exist",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "认证绕过漏洞",
+                    "description": "内容可控，可能可用于认证绕过",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "Autobinding",
+            "regex": "\\b(@SessionAttributes|@ModelAttribute)",
+            "regex_flag": "ig",
+            "regex_match_cond": {},
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "Autobinding",
+                    "description": "Autobinding vulnerabilities may exist",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "Autobinding",
+                    "description": "可能存在Autobinding漏洞",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "Command execution",
+            "regex": "\\b((ProcessBuilder(\\(|\\.))|(Runtime\\.getRuntime\\(\\)))",
+            "regex_flag": "ig",
+            "regex_match_cond": {},
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "Command execution",
+                    "description": "A function that executes a command is called, a command execution vulnerability may exist",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "命令执行漏洞",
+                    "description": "调用了执行命令的函数，可能存在命令执行漏洞",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "Deserialization",
+            "regex": "\\b(readObject|JSON\\.parseObject|ObjectMapper\\.readValue|fromXML|readUnshared)\\(",
+            "regex_flag": "ig",
+            "regex_match_cond": {},
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "Deserialization",
+                    "description": "There is deserialization operation, there may be deserialization vulnerability",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "反序列化漏洞",
+                    "description": "存在反序列化操作，可能存在反序列化漏洞",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "File upload exists",
+            "regex": "\\bgetOriginalFilename\\(",
+            "regex_flag": "ig",
+            "regex_match_cond": {},
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "File upload exists",
+                    "description": "File upload exists, pay attention to whether the upload type is controllable",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "存在文件上传",
+                    "description": "存在文件上传，注意上传类型是否可控",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "File upload exists",
+            "regex": "\\bMultipartFile\\(",
+            "regex_flag": "ig",
+            "regex_match_cond": {},
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "File upload exists",
+                    "description": "File upload exists, pay attention to whether the upload type is controllable",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "存在文件上传",
+                    "description": "存在文件上传，注意上传类型是否可控",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "SQL injection",
+            "regex": "\\b(?:select|update|delete)\\s+.*(?:from|set).*where\\s+\\w+\\s*=[^\"']*(?:\"|').*(?:\\+|\\%s)",
+            "regex_flag": "ig",
+            "regex_match_cond": {},
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "SQL injection",
+                    "description": "SQL statements are spliced, SQL injection vulnerabilities may exist",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "SQL注入漏洞",
+                    "description": "SQL语句存在拼接，可能存在SQL注入漏洞",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "SQL injection",
+            "regex": "insert\\s{1,5}into\\s{1,5}.{1,100}\\+",
+            "regex_flag": "ig",
+            "regex_match_cond": {},
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "SQL injection",
+                    "description": "SQL injection vulnerabilities may exist",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "SQL注入漏洞",
+                    "description": "SQL语句insert中可能存在SQL注入漏洞",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "SSRF",
+            "regex": "\\b(getInputStream|executeMethod|execute|connect|HttpClient)\\(",
+            "regex_flag": "ig",
+            "regex_match_cond": {},
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "SSRF",
+                    "description": "SSRF vulnerability may exist",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "SSRF漏洞",
+                    "description": "可能存在SSRF漏洞",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "Unsafe random number",
+            "regex": "\\bnew Random\\s*\\(|Random\\.next",
+            "regex_flag": "ig",
+            "regex_match_cond": {},
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "Unsafe random number",
+                    "description": "Using predictable random numbers may lead to vulnerabilities",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "不安全的随机数",
+                    "description": " 使用可预测的随机数可能会导致漏洞",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "XSS",
+            "regex": "\\bout\\.println\\s*\\(\\s*request\\.get(Parameter|QueryString)\\s*\\(\\s*\"",
+            "regex_flag": "ig",
+            "regex_match_cond": {},
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "XSS",
+                    "description": "Direct output of parameters may lead to XSS vulnerabilities",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "XSS漏洞",
+                    "description": "直接输出了参数可能导致XSS漏洞",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "XXE",
+            "regex": "\\b(new\\s+SAXReader|new\\s+SAXBuilder|new\\s+SAXParser|createXMLReader|newDocumentBuilder|createXMLStreamReader)\\(",
+            "regex_flag": "ig",
+            "regex_match_cond": {},
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "XXE",
+                    "description": "Called XML related functions, XXE vulnerability may exist",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "XXE漏洞",
+                    "description": "调用了XML相关函数，可能存在XXE漏洞",
+                    "detail_url": ""
+                }
+            }
+        }
+    ]
+}
