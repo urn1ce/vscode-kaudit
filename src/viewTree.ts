@@ -37,6 +37,20 @@ export namespace Kaudit {
             {
                 // here used for show group Name
                 clabel = toHandle.view_info[config.Kaudit.Config.getLanguage()]["name"];
+                let groupName2AnalysisRecordsMap = core.Kaudit.Analysis.lang_groupName2AnalysisRecordsMap.get(toHandle.apply_lang);
+                if(groupName2AnalysisRecordsMap){
+                    let analysisRecords = groupName2AnalysisRecordsMap.get(toHandle.group_name);
+                    if(analysisRecords){
+                        let cnt = 0;
+                        for(let ar of analysisRecords){
+                            if(ar.regex.rule.order == toHandle.order){
+                                cnt++;
+                            }
+                        }
+                        if(cnt > 0)
+                            clabel = `${clabel} ${cnt}`
+                    }
+                }
                 ctooltip = `${toHandle.group_name}  Order:${toHandle.order}`;
             }else
             {
@@ -130,7 +144,7 @@ export namespace Kaudit {
                             let analysisRecords = groupName2AnalysisRecordsMap.get(regRule.group_name);
                             if(analysisRecords && analysisRecords.length > 0){
                                 let notCreated = true;    
-                                let groupNameNode:ExplorerNode = new ExplorerNode(regRule, vscode.TreeItemCollapsibleState.Expanded);                                                     
+                                let groupNameNode:ExplorerNode = new ExplorerNode(regRule, vscode.TreeItemCollapsibleState.Collapsed);                                                     
                                 for(let ar of analysisRecords){                                    
                                     if(ar.regex.rule.order == regRule.order) {
                                         if(notCreated){

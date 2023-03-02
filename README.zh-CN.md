@@ -4,10 +4,6 @@
 
 简体中文 | [English](README.md)
 
-## Still under development...
-
-Something wrong in README, here content will modify when first stable version is available
-
 ## 简介
 
 基于正则规则匹配的源码审计工具
@@ -15,7 +11,6 @@ Something wrong in README, here content will modify when first stable version is
 * 基于 `Maudit` 审计规则进行扩展
   * 重新定义底层规则模型
   * 支持规则的优先级排序，控制匹配结果的显示排序
-* 基于 `Maudit` 设计思想，重构了所有代码，核心处理代码与 `Maudit` 不一致
 * 默认正则匹配规则来自 `Maudit` ,但提供自定义规则扩展
 * 提供语言以及漏洞类型分类导航
 * 提供OUTLINE页内导航
@@ -24,26 +19,33 @@ Something wrong in README, here content will modify when first stable version is
 
 ## 安装
 
-* 从VSCode商店搜索 `maduit`安装
+* 从VSCode商店搜索 `kaduit`安装
+
 * 源码安装
 
   ```
-  git clone https://github.com/xxxxxx
-  cd kaudit
+  git clone https://github.com/urn1ce/vscode-kaudit.git
+  cd vscode-kaudit
   npm install
   npm install -g vsce
   vsce package
   ```
 
   从VScode扩展页面菜单选择VSIX文件安装
+  
 * 建议安装 `Error Lens`插件，匹配行显示匹配规则的description信息(可选)
+
 * 建议安装 `Output Colorizer`插件，控制台输出将提供颜色区分(可选)
+
+* 建议安装 `Bookmarks`插件，标记感兴趣的位置
 
 ## 快速开始
 
 打开包含 `php/perl/python/java` 源码项目，点击插件界面右上角的刷新按钮，即会对工作空间开始匹配分析
 
 > Tips: 可以拖拽树视图放置到默认的资源管理器中，这样文件浏览和匹配记录浏览在一个界面会比较方便
+
+![viewAdjustment](resources/md/viewAdjustment.png)
 
 ## 自定义规则
 
@@ -83,42 +85,55 @@ CustomRules Format:
 ```js
 "conf.Kaudit.customRules":{
     "php": [
-        {
-            "group_name": "Command execution",
-            "regex": "\\b(system|passthru|pcntl_exec|shell_exec|escapeshellcmd|exec|proc_open|popen|expect_popen)\\s{0,10}\\(.{0,40}\\$\\w{1,20}((\\[[\"']|\\[)\\${0,1}[\\w\\[\\]\"']{0,30}){0,1}",
-            "regex_match_cond": {},
-            "order": 1000,
-            "view_info": {
-                "en": {
-                    "name": "Command execution",
-                    "description": "There are variables in the command execution function, there may be arbitrary command execution vulnerabilities",
-                    "detail_url": ""
+        	{
+                "group_name": "SQL insert operation",
+                "regex": "\\binsert\\b",
+                "regex_flag": "ig",
+                "regex_match_cond": {
+                    "context_aware_match":{
+                        "match_mode":"all",
+                        "context_aware_rules":{
+                            "anyKeyName1ofContext_aware_rules": {
+                                "range_begin":"0",
+                                "range_end":"0",
+                                "match_mode":"!all",
+                                "cond_rules":{
+                                    "anyKeyName1ofCond_rules":"\\s*(#|//|/\\*).*\\binsert\\b"
+                                },
+                                "cond_rules_flag":{
+                                    "anyKeyName1ofCond_rules":"ig"
+                                }
+                            },
+                            "anyKeyName2ofContext_aware_rules": {
+                                "range_begin":"0",
+                                "range_end":"4",
+                                "match_mode":"any",
+                                "cond_rules":{
+                                    "anyKeyName1ofCond_rules":"\\binto\\b.+(\\$|[a-zA-Z_0-9]+\\s*\\().+",
+                                    "anyKeyName2ofCond_rules":"(:?(\\$|[a-zA-Z_0-9]+\\s*\\()((?<!\\b(into)\\b).)+\\bvalues\\b)|(:?\\bvalues\\b.+(\\$|[a-zA-Z_0-9]+\\s*\\().+)"
+                                },
+                                "cond_rules_flag":{
+                                    "anyKeyName1ofCond_rules":"ig",
+                                    "anyKeyName2ofCond_rules":"ig"
+                                }
+                            }
+                        }
+                    }
                 },
-                "zh": {
-                    "name": "命令执行漏洞",
-                    "description": "命令执行函数中存在变量，可能存在任意命令执行漏洞",
-                    "detail_url": ""
+                "order": 1000,
+                "view_info": {
+                    "en": {
+                        "name": "SQL insert operation",
+                        "description": "Can lead to SQL injection",
+                        "detail_url": ""
+                    },
+                    "zh": {
+                        "name": "SQL插入操作",
+                        "description": "可能导致SQL注入",
+                        "detail_url": ""
+                    }
                 }
             }
-        },
-        {
-            "group_name": "Code execution",
-            "regex": "\\bcall_user_func(_array){0,1}\\(\\s{0,5}\\$\\w{1,15}((\\[[\"']|\\[)\\${0,1}[\\w\\[\\]\"']{0,30}){0,1}",
-            "regex_match_cond": {},
-            "order": 1000,
-            "view_info": {
-                "en": {
-                    "name": "Code execution",
-                    "description": "call_user_func function parameter contains variables, code execution vulnerability may exist",
-                    "detail_url": ""
-                },
-                "zh": {
-                    "name": "代码执行漏洞",
-                    "description": "call_user_func函数参数包含变量，可能存在代码执行漏洞",
-                    "detail_url": ""
-                }
-            }
-        }
     ],
     "perl": [
         {
@@ -143,16 +158,16 @@ CustomRules Format:
 }
 ```
 
-`group_name` 相同 `group_name`匹配到的数据会被分组在一起
+`group_name` 相同且`order `相同的规则匹配到的数据会被分组在一起
 
 `regex` 按行匹配的正则pattern
 
-`regex_match_cond`  `regex_match_cond`规则，允许对 `regex` 匹配的结果进一步条件过滤
+`regex_match_cond`  规则，允许对 `regex` 匹配的结果进一步条件过滤
 
-* 目前 `regex_match_cond` 仅支持 `file_contain_regex`。在进行 `regex` 匹配时，还会检查匹配点所在文件是否包含其它 `file_contain_regex` 指定的信息。如果包含则命中，不包含则跳过。
-* "regex_match_cond":{"file_contain_regex":{"keyNameNotImportant1":"cond_regex1","keyNameNotImportant2":"cond_regex2"}} 所有file_contain_regex 规则要求在同一个文件内都匹配
-
-`order` 先按照 `order` 排序，如果相同则按照 `group_name`排序，接着 `file name`排序
+* "range_begin":"0" 表示从`regex` 匹配行行号+0  开始条件匹配，可以为"负数"/"正数"/""(空字符串表示文件开头)
+* "range_end":"0"    表示从`regex` 匹配行行号+0  结束条件匹配，可以为"负数"/"正数"/""(空字符串表示文件结束)
+* all/any/!all/!any表示条件规则匹配要在`range_begin-range_end` 全满足/任一满足/全不满足/至少有一个不满足
+* 条件匹配满足的含义：首先cond_rule都是按行匹配，其次一个cond_rule条件规则不需要匹配所有range范围内的行，而是range范围内能匹配一行就算该条cond_rule匹配，再然后cond_rule构成的cond_rules是否满足all/any/!all/!any，如果满足则cond_rules匹配，最后所有cond_rules构成的context_aware_match是否满足all/any/!all/!any，如果满足则匹配
 
 `view_info` 用于展示提示信息
 
