@@ -341,102 +341,7 @@
                     "detail_url": ""
                 }
             }
-        },
-        {
-            "group_name": "SQL injection",
-            "regex": "[\"'](HTTP_CLIENT_IP|HTTP_X_FORWARDED_FOR|HTTP_REFERER)[\"']",
-            "regex_flag": "ig",
-            "regex_match_cond": {},
-            "order": 1000,
-            "view_info": {
-                "en": {
-                    "name": "SQL injection",
-                    "description": "The method of obtaining the IP address can be forged, HTTP_REFERER can be forged, and SQL injection and other vulnerabilities are commonly caused.",
-                    "detail_url": ""
-                },
-                "zh": {
-                    "name": "SQL注入漏洞",
-                    "description": "获取IP地址方式可伪造，HTTP_REFERER可伪造，常见引发SQL注入等漏洞",
-                    "detail_url": ""
-                }
-            }
-        },
-        {
-            "group_name": "SQL injection",
-            "regex": "select\\s{1,4}.{1,60}from.{1,50}\\bwhere\\s{1,3}.{1,50}=[\"\\s\\.]{0,10}\\$\\w{1,20}((\\[[\"']|\\[)\\${0,1}[\\w\\[\\]\"']{0,30}){0,1}",
-            "regex_flag": "ig",
-            "regex_match_cond": {},
-            "order": 1000,
-            "view_info": {
-                "en": {
-                    "name": "SQL injection",
-                    "description": "The condition variable in the SQL statement select is not protected by single quotes, and there may be a SQL injection vulnerability",
-                    "detail_url": ""
-                },
-                "zh": {
-                    "name": "SQL注入漏洞",
-                    "description": "SQL语句select中条件变量无单引号保护，可能存在SQL注入漏洞",
-                    "detail_url": ""
-                }
-            }
-        },
-        {
-            "group_name": "SQL injection",
-            "regex": "delete\\s{1,4}from.{1,20}\\bwhere\\s{1,3}.{1,30}=[\"\\s\\.]{0,10}\\$\\w{1,20}((\\[[\"']|\\[)\\${0,1}[\\w\\[\\]\"']{0,30}){0,1}",
-            "regex_flag": "ig",
-            "regex_match_cond": {},
-            "order": 1000,
-            "view_info": {
-                "en": {
-                    "name": "SQL injection",
-                    "description": "The condition variable in the SQL statement delete is not protected by single quotes, and there may be a SQL injection vulnerability",
-                    "detail_url": ""
-                },
-                "zh": {
-                    "name": "SQL注入漏洞",
-                    "description": "SQL语句delete中条件变量无单引号保护，可能存在SQL注入漏洞",
-                    "detail_url": ""
-                }
-            }
-        },
-        {
-            "group_name": "SQL injection",
-            "regex": "insert\\s{1,5}into\\s{1,5}.{1,60}\\$\\w{1,20}((\\[[\"']|\\[)\\${0,1}[\\w\\[\\]\"']{0,30}){0,1}",
-            "regex_flag": "ig",
-            "regex_match_cond": {},
-            "order": 1000,
-            "view_info": {
-                "en": {
-                    "name": "SQL injection",
-                    "description": "The condition variable in the SQL statement insert is not protected by single quotes, and there may be a SQL injection vulnerability",
-                    "detail_url": ""
-                },
-                "zh": {
-                    "name": "SQL注入漏洞",
-                    "description": "SQL语句insert中插入变量无单引号保护，可能存在SQL注入漏洞",
-                    "detail_url": ""
-                }
-            }
-        },
-        {
-            "group_name": "SQL injection",
-            "regex": "update\\s{1,4}.{1,30}\\s{1,3}set\\s{1,5}.{1,60}\\$\\w{1,20}((\\[[\"']|\\[)\\${0,1}[\\w\\[\\]\"']{0,30}){0,1}",
-            "regex_flag": "ig",
-            "regex_match_cond": {},
-            "order": 1000,
-            "view_info": {
-                "en": {
-                    "name": "SQL injection",
-                    "description": "The condition variable in the SQL statement update is not protected by single quotes, and there may be a SQL injection vulnerability",
-                    "detail_url": ""
-                },
-                "zh": {
-                    "name": "SQL注入漏洞",
-                    "description": "SQL语句update中条件变量无单引号保护，可能存在SQL注入漏洞",
-                    "detail_url": ""
-                }
-            }
-        },
+        },        
         {
             "group_name": "SSRF",
             "regex": "\\bcurl_setopt\\s*?\\(.*,\\s*CURLOPT_URL\\s*,\\s{0,10}\\$\\w{1,20}((\\[[\"']|\\[)\\${0,1}[\\w\\[\\]\"']{0,30}){0,1}\\)",
@@ -778,6 +683,317 @@
                     "detail_url": ""
                 }
             }
+        },
+        {
+            "group_name": "SQL select operation",
+            "regex": "\\bselect\\b",
+            "regex_flag": "ig",
+            "regex_match_cond": {
+                "context_aware_match":{
+                    "match_mode":"all",
+                    "context_aware_rules":{
+                        "anyKeyName1ofContext_aware_rules": {
+                            "range_begin":"0",
+                            "range_end":"4",
+                            "match_mode":"all",
+                            "cond_rules":{
+                                "anyKeyName1ofCond_rules":"\\bfrom\\b"
+                            },
+                            "cond_rules_flag":{
+                                "anyKeyName1ofCond_rules":"ig"
+                            }
+                        },
+                        "anyKeyName2ofContext_aware_rules": {
+                            "range_begin":"0",
+                            "range_end":"0",
+                            "match_mode":"!all",
+                            "cond_rules":{
+                                "anyKeyName1ofCond_rules":"\\s*(#|//|/\\*).*\\bselect\\b"
+                            },
+                            "cond_rules_flag":{
+                                "anyKeyName1ofCond_rules":"ig"
+                            }
+                        },
+                        "anyKeyName3ofContext_aware_rules": {
+                            "range_begin":"0",
+                            "range_end":"4",
+                            "match_mode":"any",
+                            "cond_rules":{
+                                "anyKeyName1ofCond_rules":"\\bselect\\b.+(\\$|[a-zA-Z_0-9]+\\s*\\().+",
+                                "anyKeyName2ofCond_rules":"(:?(\\$|[a-zA-Z_0-9]+\\s*\\()((?<!\\b(select)\\b).)+\\bfrom\\b)|(:?\\bfrom\\b.+(\\$|[a-zA-Z_0-9]+\\s*\\().+)",
+                                "anyKeyName3ofCond_rules":"(:?(\\$|[a-zA-Z_0-9]+\\s*\\()((?<!\\b(select)\\b).)+\\bwhere\\b)|(:?\\bwhere\\b.+(\\$|[a-zA-Z_0-9]+\\s*\\().+)",
+                                "anyKeyName4ofCond_rules":"(:?(\\$|[a-zA-Z_0-9]+\\s*\\()((?<!\\b(select)\\b).)+\\bin\\b)|(:?\\bin\\b.+(\\$|[a-zA-Z_0-9]+\\s*\\().+)",
+                                "anyKeyName5ofCond_rules":"(:?(\\$|[a-zA-Z_0-9]+\\s*\\()((?<!\\b(select)\\b).)+\\bbetween\\b)|(:?\\bbetween\\b.+(\\$|[a-zA-Z_0-9]+\\s*\\().+)",
+                                "anyKeyName6ofCond_rules":"(:?(\\$|[a-zA-Z_0-9]+\\s*\\()((?<!\\b(select)\\b).)+\\blike\\b)|(:?\\blike\\b.+(\\$|[a-zA-Z_0-9]+\\s*\\().+)",
+                                "anyKeyName7ofCond_rules":"(:?(\\$|[a-zA-Z_0-9]+\\s*\\()((?<!\\b(select)\\b).)+\\bjoin\\b)|(:?\\bjoin\\b.+(\\$|[a-zA-Z_0-9]+\\s*\\().+)",
+                                "anyKeyName8ofCond_rules":"(:?(\\$|[a-zA-Z_0-9]+\\s*\\()((?<!\\b(select)\\b).)+\\bunion\\b)|(:?\\bunion\\b.+(\\$|[a-zA-Z_0-9]+\\s*\\().+)",
+                                "anyKeyName9ofCond_rules":"(:?(\\$|[a-zA-Z_0-9]+\\s*\\()((?<!\\b(select)\\b).)+\\bon\\b)|(:?\\bon\\b.+(\\$|[a-zA-Z_0-9]+\\s*\\().+)",
+                                "anyKeyName10ofCond_rules":"(:?(\\$|[a-zA-Z_0-9]+\\s*\\()((?<!\\b(select)\\b).)+\\border\\b.*\\bby\\b)|(:?\\border\\b.*\\bby\\b.+(\\$|[a-zA-Z_0-9]+\\s*\\().+)",
+                                "anyKeyName11ofCond_rules":"(:?(\\$|[a-zA-Z_0-9]+\\s*\\()((?<!\\b(select)\\b).)+\\binto\\b)|(:?\\binto\\b.+(\\$|[a-zA-Z_0-9]+\\s*\\().+)",
+                                "anyKeyName12ofCond_rules":"(:?(\\$|[a-zA-Z_0-9]+\\s*\\()((?<!\\b(select)\\b).)+\\band\\b)|(:?\\band\\b.+(\\$|[a-zA-Z_0-9]+\\s*\\().+)",
+                                "anyKeyName13ofCond_rules":"(:?(\\$|[a-zA-Z_0-9]+\\s*\\()((?<!\\b(select)\\b).)+\\bor\\b)|(:?\\bor\\b.+(\\$|[a-zA-Z_0-9]+\\s*\\().+)"
+                            },
+                            "cond_rules_flag":{
+                                "anyKeyName1ofCond_rules":"ig",
+                                "anyKeyName2ofCond_rules":"ig",
+                                "anyKeyName3ofCond_rules":"ig",
+                                "anyKeyName4ofCond_rules":"ig",
+                                "anyKeyName5ofCond_rules":"ig",
+                                "anyKeyName6ofCond_rules":"ig",
+                                "anyKeyName7ofCond_rules":"ig",
+                                "anyKeyName8ofCond_rules":"ig",
+                                "anyKeyName9ofCond_rules":"ig",
+                                "anyKeyName10ofCond_rules":"ig",
+                                "anyKeyName11ofCond_rules":"ig",
+                                "anyKeyName12ofCond_rules":"ig",
+                                "anyKeyName13ofCond_rules":"ig"
+                            }
+                        }
+                    }
+                }
+            },
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "SQL select operation",
+                    "description": "Can lead to SQL injection",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "SQL查询操作",
+                    "description": "可能导致SQL注入",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "SQL insert operation",
+            "regex": "\\binsert\\b",
+            "regex_flag": "ig",
+            "regex_match_cond": {
+                "context_aware_match":{
+                    "match_mode":"all",
+                    "context_aware_rules":{
+                        "anyKeyName1ofContext_aware_rules": {
+                            "range_begin":"0",
+                            "range_end":"0",
+                            "match_mode":"!all",
+                            "cond_rules":{
+                                "anyKeyName1ofCond_rules":"\\s*(#|//|/\\*).*\\binsert\\b"
+                            },
+                            "cond_rules_flag":{
+                                "anyKeyName1ofCond_rules":"ig"
+                            }
+                        },
+                        "anyKeyName2ofContext_aware_rules": {
+                            "range_begin":"0",
+                            "range_end":"4",
+                            "match_mode":"any",
+                            "cond_rules":{
+                                "anyKeyName1ofCond_rules":"\\binto\\b.+(\\$|[a-zA-Z_0-9]+\\s*\\().+",
+                                "anyKeyName2ofCond_rules":"(:?(\\$|[a-zA-Z_0-9]+\\s*\\()((?<!\\b(into)\\b).)+\\bvalues\\b)|(:?\\bvalues\\b.+(\\$|[a-zA-Z_0-9]+\\s*\\().+)"
+                            },
+                            "cond_rules_flag":{
+                                "anyKeyName1ofCond_rules":"ig",
+                                "anyKeyName2ofCond_rules":"ig"
+                            }
+                        }
+                    }
+                }
+            },
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "SQL insert operation",
+                    "description": "Can lead to SQL injection",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "SQL插入操作",
+                    "description": "可能导致SQL注入",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "SQL update operation",
+            "regex": "\\bupdate\\b",
+            "regex_flag": "ig",
+            "regex_match_cond": {
+                "context_aware_match":{
+                    "match_mode":"all",
+                    "context_aware_rules":{
+                        "anyKeyName1ofContext_aware_rules": {
+                            "range_begin":"0",
+                            "range_end":"4",
+                            "match_mode":"all",
+                            "cond_rules":{
+                                "anyKeyName1ofCond_rules":"\\bset\\b"
+                            },
+                            "cond_rules_flag":{
+                                "anyKeyName1ofCond_rules":"ig"
+                            }
+                        },
+                        "anyKeyName2ofContext_aware_rules": {
+                            "range_begin":"0",
+                            "range_end":"0",
+                            "match_mode":"!all",
+                            "cond_rules":{
+                                "anyKeyName1ofCond_rules":"\\s*(#|//|/\\*).*\\bupdate\\b"
+                            },
+                            "cond_rules_flag":{
+                                "anyKeyName1ofCond_rules":"ig"
+                            }
+                        },
+                        "anyKeyName3ofContext_aware_rules": {
+                            "range_begin":"0",
+                            "range_end":"4",
+                            "match_mode":"any",
+                            "cond_rules":{
+                                "anyKeyName1ofCond_rules":"\\bupdate\\b.+(\\$|[a-zA-Z_0-9]+\\s*\\().+",
+                                "anyKeyName2ofCond_rules":"(:?(\\$|[a-zA-Z_0-9]+\\s*\\()((?<!\\b(update)\\b).)+\\bset\\b)|(:?\\bset\\b.+(\\$|[a-zA-Z_0-9]+\\s*\\().+)",
+                                "anyKeyName3ofCond_rules":"(:?(\\$|[a-zA-Z_0-9]+\\s*\\()((?<!\\b(update)\\b).)+\\bwhere\\b)|(:?\\bwhere\\b.+(\\$|[a-zA-Z_0-9]+\\s*\\().+)",
+                                "anyKeyName4ofCond_rules":"(:?(\\$|[a-zA-Z_0-9]+\\s*\\()((?<!\\b(update)\\b).)+\\bin\\b)|(:?\\bin\\b.+(\\$|[a-zA-Z_0-9]+\\s*\\().+)",
+                                "anyKeyName5ofCond_rules":"(:?(\\$|[a-zA-Z_0-9]+\\s*\\()((?<!\\b(update)\\b).)+\\blike\\b)|(:?\\blike\\b.+(\\$|[a-zA-Z_0-9]+\\s*\\().+)",
+                                "anyKeyName6ofCond_rules":"(:?(\\$|[a-zA-Z_0-9]+\\s*\\()((?<!\\b(update)\\b).)+\\bbetween\\b)|(:?\\bbetween\\b.+(\\$|[a-zA-Z_0-9]+\\s*\\().+)",
+                                "anyKeyName7ofCond_rules":"(:?(\\$|[a-zA-Z_0-9]+\\s*\\()((?<!\\b(update)\\b).)+\\band\\b)|(:?\\band\\b.+(\\$|[a-zA-Z_0-9]+\\s*\\().+)",
+                                "anyKeyName8ofCond_rules":"(:?(\\$|[a-zA-Z_0-9]+\\s*\\()((?<!\\b(update)\\b).)+\\bor\\b)|(:?\\bor\\b.+(\\$|[a-zA-Z_0-9]+\\s*\\().+)"
+                            },
+                            "cond_rules_flag":{
+                                "anyKeyName1ofCond_rules":"ig",
+                                "anyKeyName2ofCond_rules":"ig",
+                                "anyKeyName3ofCond_rules":"ig",
+                                "anyKeyName4ofCond_rules":"ig",
+                                "anyKeyName5ofCond_rules":"ig",
+                                "anyKeyName6ofCond_rules":"ig",
+                                "anyKeyName7ofCond_rules":"ig",
+                                "anyKeyName8ofCond_rules":"ig"
+                            }
+                        }
+                    }
+                }
+            },
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "SQL update operation",
+                    "description": "Can lead to SQL injection",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "SQL更新操作",
+                    "description": "可能导致SQL注入",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "SQL delete operation",
+            "regex": "\\bdelete\\b",
+            "regex_flag": "ig",
+            "regex_match_cond": {
+                "context_aware_match":{
+                    "match_mode":"all",
+                    "context_aware_rules":{
+                        "anyKeyName1ofContext_aware_rules": {
+                            "range_begin":"0",
+                            "range_end":"4",
+                            "match_mode":"all",
+                            "cond_rules":{
+                                "anyKeyName1ofCond_rules":"\\bfrom\\b"
+                            },
+                            "cond_rules_flag":{
+                                "anyKeyName1ofCond_rules":"ig"
+                            }
+                        },
+                        "anyKeyName2ofContext_aware_rules": {
+                            "range_begin":"0",
+                            "range_end":"0",
+                            "match_mode":"!all",
+                            "cond_rules":{
+                                "anyKeyName1ofCond_rules":"\\s*(#|//|/\\*).*\\bdelete\\b"
+                            },
+                            "cond_rules_flag":{
+                                "anyKeyName1ofCond_rules":"ig"
+                            }
+                        },
+                        "anyKeyName3ofContext_aware_rules": {
+                            "range_begin":"0",
+                            "range_end":"4",
+                            "match_mode":"any",
+                            "cond_rules":{
+                                "anyKeyName1ofCond_rules":"\\bfrom\\b.+(\\$|[a-zA-Z_0-9]+\\s*\\().+",
+                                "anyKeyName2ofCond_rules":"(:?(\\$|[a-zA-Z_0-9]+\\s*\\()((?<!\\b(from)\\b).)+\\bwhere\\b)|(:?\\bwhere\\b.+(\\$|[a-zA-Z_0-9]+\\s*\\().+)",
+                                "anyKeyName3ofCond_rules":"(:?(\\$|[a-zA-Z_0-9]+\\s*\\()((?<!\\b(from)\\b).)+\\bin\\b)|(:?\\bin\\b.+(\\$|[a-zA-Z_0-9]+\\s*\\().+)",
+                                "anyKeyName4ofCond_rules":"(:?(\\$|[a-zA-Z_0-9]+\\s*\\()((?<!\\b(from)\\b).)+\\blike\\b)|(:?\\blike\\b.+(\\$|[a-zA-Z_0-9]+\\s*\\().+)",
+                                "anyKeyName5ofCond_rules":"(:?(\\$|[a-zA-Z_0-9]+\\s*\\()((?<!\\b(from)\\b).)+\\bbetween\\b)|(:?\\bbetween\\b.+(\\$|[a-zA-Z_0-9]+\\s*\\().+)",
+                                "anyKeyName6ofCond_rules":"(:?(\\$|[a-zA-Z_0-9]+\\s*\\()((?<!\\b(from)\\b).)+\\band\\b)|(:?\\band\\b.+(\\$|[a-zA-Z_0-9]+\\s*\\().+)",
+                                "anyKeyName7ofCond_rules":"(:?(\\$|[a-zA-Z_0-9]+\\s*\\()((?<!\\b(from)\\b).)+\\bor\\b)|(:?\\bor\\b.+(\\$|[a-zA-Z_0-9]+\\s*\\().+)"
+                            },
+                            "cond_rules_flag":{
+                                "anyKeyName1ofCond_rules":"ig",
+                                "anyKeyName2ofCond_rules":"ig",
+                                "anyKeyName3ofCond_rules":"ig",
+                                "anyKeyName4ofCond_rules":"ig",
+                                "anyKeyName5ofCond_rules":"ig",
+                                "anyKeyName6ofCond_rules":"ig",
+                                "anyKeyName7ofCond_rules":"ig"
+                            }
+                        }
+                    }
+                }
+            },
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "SQL delete operation",
+                    "description": "Can lead to SQL injection",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "SQL删除操作",
+                    "description": "可能导致SQL注入",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "General IDUS operation",
+            "regex": "\\b(?:insert|delete|update|select)\\b.*(\\$|[a-zA-Z_0-9]+\\s*\\().{1,30}",
+            "regex_flag":"ig",
+            "regex_match_cond": {},
+            "order": 10000,
+            "view_info": {
+                "en": {
+                    "name": "General insert|delete|update|select operation",
+                    "description": "Maybe lead SQL-Like injection",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "General insert|delete|update|select操作",
+                    "description": "可能导致类SQL注入",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "General SQL CDAT operation",
+            "regex": "\\b(create|drop|alter|truncate)\\b.+\\b(index|table|database)\\b.*(\\$|[a-zA-Z_0-9]+\\s*\\()",
+            "regex_flag":"ig",
+            "regex_match_cond": {},
+            "order": 10000,
+            "view_info": {
+                "en": {
+                    "name": "SQL create|drop|alter|truncate operation",
+                    "description": "Maybe lead SQL injection",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "SQL create|drop|alter|truncate操作",
+                    "description": "可能导致SQL注入",
+                    "detail_url": ""
+                }
+            }
         }
     ],
     "perl": [
@@ -896,19 +1112,311 @@
             }
         },
         {
-            "group_name": "SQL query operation",
-            "regex": "\\b(select|update|insert|delete)\\s+.*?(\\$|@)\\w{1,30}",
+            "group_name": "SQL select operation",
+            "regex": "\\bselect\\b",
             "regex_flag": "ig",
-            "regex_match_cond": {},
+            "regex_match_cond": {
+                "context_aware_match":{
+                    "match_mode":"all",
+                    "context_aware_rules":{
+                        "anyKeyName1ofContext_aware_rules": {
+                            "range_begin":"0",
+                            "range_end":"4",
+                            "match_mode":"all",
+                            "cond_rules":{
+                                "anyKeyName1ofCond_rules":"\\bfrom\\b"
+                            },
+                            "cond_rules_flag":{
+                                "anyKeyName1ofCond_rules":"ig"
+                            }
+                        },
+                        "anyKeyName2ofContext_aware_rules": {
+                            "range_begin":"0",
+                            "range_end":"0",
+                            "match_mode":"!all",
+                            "cond_rules":{
+                                "anyKeyName1ofCond_rules":"\\s*#.*\\bselect\\b"
+                            },
+                            "cond_rules_flag":{
+                                "anyKeyName1ofCond_rules":"ig"
+                            }
+                        },
+                        "anyKeyName3ofContext_aware_rules": {
+                            "range_begin":"0",
+                            "range_end":"4",
+                            "match_mode":"any",
+                            "cond_rules":{
+                                "anyKeyName1ofCond_rules":"\\bselect\\b.+([\\$@%]|\\w+\\(\\)).+",
+                                "anyKeyName2ofCond_rules":"(:?([\\$@%]|\\w+\\(\\))((?<!\\b(select)\\b).)+\\bfrom\\b)|(:?\\bfrom\\b.+([\\$@%]|\\w+\\(\\)).+)",
+                                "anyKeyName3ofCond_rules":"(:?([\\$@%]|\\w+\\(\\))((?<!\\b(select)\\b).)+\\bwhere\\b)|(:?\\bwhere\\b.+([\\$@%]|\\w+\\(\\)).+)",
+                                "anyKeyName4ofCond_rules":"(:?([\\$@%]|\\w+\\(\\))((?<!\\b(select)\\b).)+\\bin\\b)|(:?\\bin\\b.+([\\$@%]|\\w+\\(\\)).+)",
+                                "anyKeyName5ofCond_rules":"(:?([\\$@%]|\\w+\\(\\))((?<!\\b(select)\\b).)+\\bbetween\\b)|(:?\\bbetween\\b.+([\\$@%]|\\w+\\(\\)).+)",
+                                "anyKeyName6ofCond_rules":"(:?([\\$@%]|\\w+\\(\\))((?<!\\b(select)\\b).)+\\blike\\b)|(:?\\blike\\b.+([\\$@%]|\\w+\\(\\)).+)",
+                                "anyKeyName7ofCond_rules":"(:?([\\$@%]|\\w+\\(\\))((?<!\\b(select)\\b).)+\\bjoin\\b)|(:?\\bjoin\\b.+([\\$@%]|\\w+\\(\\)).+)",
+                                "anyKeyName8ofCond_rules":"(:?([\\$@%]|\\w+\\(\\))((?<!\\b(select)\\b).)+\\bunion\\b)|(:?\\bunion\\b.+([\\$@%]|\\w+\\(\\)).+)",
+                                "anyKeyName9ofCond_rules":"(:?([\\$@%]|\\w+\\(\\))((?<!\\b(select)\\b).)+\\bon\\b)|(:?\\bon\\b.+([\\$@%]|\\w+\\(\\)).+)",
+                                "anyKeyName10ofCond_rules":"(:?([\\$@%]|\\w+\\(\\))((?<!\\b(select)\\b).)+\\border\\b.*\\bby\\b)|(:?\\border\\b.*\\bby\\b.+([\\$@%]|\\w+\\(\\)).+)",
+                                "anyKeyName11ofCond_rules":"(:?([\\$@%]|\\w+\\(\\))((?<!\\b(select)\\b).)+\\binto\\b)|(:?\\binto\\b.+([\\$@%]|\\w+\\(\\)).+)",
+                                "anyKeyName12ofCond_rules":"(:?([\\$@%]|\\w+\\(\\))((?<!\\b(select)\\b).)+\\band\\b)|(:?\\band\\b.+([\\$@%]|\\w+\\(\\)).+)",
+                                "anyKeyName13ofCond_rules":"(:?([\\$@%]|\\w+\\(\\))((?<!\\b(select)\\b).)+\\bor\\b)|(:?\\bor\\b.+([\\$@%]|\\w+\\(\\)).+)"
+                            },
+                            "cond_rules_flag":{
+                                "anyKeyName1ofCond_rules":"ig",
+                                "anyKeyName2ofCond_rules":"ig",
+                                "anyKeyName3ofCond_rules":"ig",
+                                "anyKeyName4ofCond_rules":"ig",
+                                "anyKeyName5ofCond_rules":"ig",
+                                "anyKeyName6ofCond_rules":"ig",
+                                "anyKeyName7ofCond_rules":"ig",
+                                "anyKeyName8ofCond_rules":"ig",
+                                "anyKeyName9ofCond_rules":"ig",
+                                "anyKeyName10ofCond_rules":"ig",
+                                "anyKeyName11ofCond_rules":"ig",
+                                "anyKeyName12ofCond_rules":"ig",
+                                "anyKeyName13ofCond_rules":"ig"
+                            }
+                        }
+                    }
+                }
+            },
             "order": 1000,
             "view_info": {
                 "en": {
-                    "name": "SQL query operation",
+                    "name": "SQL select operation",
                     "description": "Can lead to SQL injection",
                     "detail_url": ""
                 },
                 "zh": {
                     "name": "SQL查询操作",
+                    "description": "可能导致SQL注入",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "SQL insert operation",
+            "regex": "\\binsert\\b",
+            "regex_flag": "ig",
+            "regex_match_cond": {
+                "context_aware_match":{
+                    "match_mode":"all",
+                    "context_aware_rules":{
+                        "anyKeyName1ofContext_aware_rules": {
+                            "range_begin":"0",
+                            "range_end":"0",
+                            "match_mode":"!all",
+                            "cond_rules":{
+                                "anyKeyName1ofCond_rules":"\\s*#.*\\binsert\\b"
+                            },
+                            "cond_rules_flag":{
+                                "anyKeyName1ofCond_rules":"ig"
+                            }
+                        },
+                        "anyKeyName2ofContext_aware_rules": {
+                            "range_begin":"0",
+                            "range_end":"4",
+                            "match_mode":"any",
+                            "cond_rules":{
+                                "anyKeyName1ofCond_rules":"\\binto\\b.+([\\$@%]|\\w+\\(\\)).+",
+                                "anyKeyName2ofCond_rules":"(:?([\\$@%]|\\w+\\(\\))((?<!\\b(into)\\b).)+\\bvalues\\b)|(:?\\bvalues\\b.+([\\$@%]|\\w+\\(\\)).+)"
+                            },
+                            "cond_rules_flag":{
+                                "anyKeyName1ofCond_rules":"ig",
+                                "anyKeyName2ofCond_rules":"ig"
+                            }
+                        }
+                    }
+                }
+            },
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "SQL insert operation",
+                    "description": "Can lead to SQL injection",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "SQL插入操作",
+                    "description": "可能导致SQL注入",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "SQL update operation",
+            "regex": "\\bupdate\\b",
+            "regex_flag": "ig",
+            "regex_match_cond": {
+                "context_aware_match":{
+                    "match_mode":"all",
+                    "context_aware_rules":{
+                        "anyKeyName1ofContext_aware_rules": {
+                            "range_begin":"0",
+                            "range_end":"4",
+                            "match_mode":"all",
+                            "cond_rules":{
+                                "anyKeyName1ofCond_rules":"\\bset\\b"
+                            },
+                            "cond_rules_flag":{
+                                "anyKeyName1ofCond_rules":"ig"
+                            }
+                        },
+                        "anyKeyName2ofContext_aware_rules": {
+                            "range_begin":"0",
+                            "range_end":"0",
+                            "match_mode":"!all",
+                            "cond_rules":{
+                                "anyKeyName1ofCond_rules":"\\s*#.*\\bupdate\\b"
+                            },
+                            "cond_rules_flag":{
+                                "anyKeyName1ofCond_rules":"ig"
+                            }
+                        },
+                        "anyKeyName3ofContext_aware_rules": {
+                            "range_begin":"0",
+                            "range_end":"4",
+                            "match_mode":"any",
+                            "cond_rules":{
+                                "anyKeyName1ofCond_rules":"\\bupdate\\b.+([\\$@%]|\\w+\\(\\)).+",
+                                "anyKeyName2ofCond_rules":"(:?([\\$@%]|\\w+\\(\\))((?<!\\b(update)\\b).)+\\bset\\b)|(:?\\bset\\b.+([\\$@%]|\\w+\\(\\)).+)",
+                                "anyKeyName3ofCond_rules":"(:?([\\$@%]|\\w+\\(\\))((?<!\\b(update)\\b).)+\\bwhere\\b)|(:?\\bwhere\\b.+([\\$@%]|\\w+\\(\\)).+)",
+                                "anyKeyName4ofCond_rules":"(:?([\\$@%]|\\w+\\(\\))((?<!\\b(update)\\b).)+\\bin\\b)|(:?\\bin\\b.+([\\$@%]|\\w+\\(\\)).+)",
+                                "anyKeyName5ofCond_rules":"(:?([\\$@%]|\\w+\\(\\))((?<!\\b(update)\\b).)+\\blike\\b)|(:?\\blike\\b.+([\\$@%]|\\w+\\(\\)).+)",
+                                "anyKeyName6ofCond_rules":"(:?([\\$@%]|\\w+\\(\\))((?<!\\b(update)\\b).)+\\bbetween\\b)|(:?\\bbetween\\b.+([\\$@%]|\\w+\\(\\)).+)",
+                                "anyKeyName7ofCond_rules":"(:?([\\$@%]|\\w+\\(\\))((?<!\\b(update)\\b).)+\\band\\b)|(:?\\band\\b.+([\\$@%]|\\w+\\(\\)).+)",
+                                "anyKeyName8ofCond_rules":"(:?([\\$@%]|\\w+\\(\\))((?<!\\b(update)\\b).)+\\bor\\b)|(:?\\bor\\b.+([\\$@%]|\\w+\\(\\)).+)"
+                            },
+                            "cond_rules_flag":{
+                                "anyKeyName1ofCond_rules":"ig",
+                                "anyKeyName2ofCond_rules":"ig",
+                                "anyKeyName3ofCond_rules":"ig",
+                                "anyKeyName4ofCond_rules":"ig",
+                                "anyKeyName5ofCond_rules":"ig",
+                                "anyKeyName6ofCond_rules":"ig",
+                                "anyKeyName7ofCond_rules":"ig",
+                                "anyKeyName8ofCond_rules":"ig"
+                            }
+                        }
+                    }
+                }
+            },
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "SQL update operation",
+                    "description": "Can lead to SQL injection",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "SQL更新操作",
+                    "description": "可能导致SQL注入",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "SQL delete operation",
+            "regex": "\\bdelete\\b",
+            "regex_flag": "ig",
+            "regex_match_cond": {
+                "context_aware_match":{
+                    "match_mode":"all",
+                    "context_aware_rules":{
+                        "anyKeyName1ofContext_aware_rules": {
+                            "range_begin":"0",
+                            "range_end":"4",
+                            "match_mode":"all",
+                            "cond_rules":{
+                                "anyKeyName1ofCond_rules":"\\bfrom\\b"
+                            },
+                            "cond_rules_flag":{
+                                "anyKeyName1ofCond_rules":"ig"
+                            }
+                        },
+                        "anyKeyName2ofContext_aware_rules": {
+                            "range_begin":"0",
+                            "range_end":"0",
+                            "match_mode":"!all",
+                            "cond_rules":{
+                                "anyKeyName1ofCond_rules":"\\s*#.*\\bdelete\\b"
+                            },
+                            "cond_rules_flag":{
+                                "anyKeyName1ofCond_rules":"ig"
+                            }
+                        },
+                        "anyKeyName3ofContext_aware_rules": {
+                            "range_begin":"0",
+                            "range_end":"4",
+                            "match_mode":"any",
+                            "cond_rules":{
+                                "anyKeyName1ofCond_rules":"\\bfrom\\b.+([\\$@%]|\\w+\\(\\)).+",
+                                "anyKeyName2ofCond_rules":"(:?([\\$@%]|\\w+\\(\\))((?<!\\b(from)\\b).)+\\bwhere\\b)|(:?\\bwhere\\b.+([\\$@%]|\\w+\\(\\)).+)",
+                                "anyKeyName3ofCond_rules":"(:?([\\$@%]|\\w+\\(\\))((?<!\\b(from)\\b).)+\\bin\\b)|(:?\\bin\\b.+([\\$@%]|\\w+\\(\\)).+)",
+                                "anyKeyName4ofCond_rules":"(:?([\\$@%]|\\w+\\(\\))((?<!\\b(from)\\b).)+\\blike\\b)|(:?\\blike\\b.+([\\$@%]|\\w+\\(\\)).+)",
+                                "anyKeyName5ofCond_rules":"(:?([\\$@%]|\\w+\\(\\))((?<!\\b(from)\\b).)+\\bbetween\\b)|(:?\\bbetween\\b.+([\\$@%]|\\w+\\(\\)).+)",
+                                "anyKeyName6ofCond_rules":"(:?([\\$@%]|\\w+\\(\\))((?<!\\b(from)\\b).)+\\band\\b)|(:?\\band\\b.+([\\$@%]|\\w+\\(\\)).+)",
+                                "anyKeyName7ofCond_rules":"(:?([\\$@%]|\\w+\\(\\))((?<!\\b(from)\\b).)+\\bor\\b)|(:?\\bor\\b.+([\\$@%]|\\w+\\(\\)).+)"
+                            },
+                            "cond_rules_flag":{
+                                "anyKeyName1ofCond_rules":"ig",
+                                "anyKeyName2ofCond_rules":"ig",
+                                "anyKeyName3ofCond_rules":"ig",
+                                "anyKeyName4ofCond_rules":"ig",
+                                "anyKeyName5ofCond_rules":"ig",
+                                "anyKeyName6ofCond_rules":"ig",
+                                "anyKeyName7ofCond_rules":"ig"
+                            }
+                        }
+                    }
+                }
+            },
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "SQL delete operation",
+                    "description": "Can lead to SQL injection",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "SQL删除操作",
+                    "description": "可能导致SQL注入",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "General IDUS peration",
+            "regex": "\\b(?:insert|delete|update|select)\\b.*[\\$@%].{1,30}",
+            "regex_flag":"ig",
+            "regex_match_cond": {},
+            "order": 10000,
+            "view_info": {
+                "en": {
+                    "name": "General insert|delete|update|select operation",
+                    "description": "Maybe lead SQL-Like injection",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "General insert|delete|update|select操作",
+                    "description": "可能导致类SQL注入",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "General SQL CDAT peration",
+            "regex": "\\b(create|drop|alter|truncate)\\b.+\\b(index|table|database)\\b.*([\\$@%]|\\w+\\(\\))",
+            "regex_flag":"ig",
+            "regex_match_cond": {},
+            "order": 10000,
+            "view_info": {
+                "en": {
+                    "name": "SQL create|drop|alter|truncate operation",
+                    "description": "Maybe lead SQL injection",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "SQL create|drop|alter|truncate操作",
                     "description": "可能导致SQL注入",
                     "detail_url": ""
                 }
@@ -1031,25 +1539,6 @@
             }
         },
         {
-            "group_name": "SQL query operation",
-            "regex": "\\b(select|update|insert|delete)\\s+",
-            "regex_flag": "ig",
-            "regex_match_cond": {},
-            "order": 1000,
-            "view_info": {
-                "en": {
-                    "name": "SQL query operation",
-                    "description": "Can lead to SQL injection",
-                    "detail_url": ""
-                },
-                "zh": {
-                    "name": "SQL查询操作",
-                    "description": "可能导致SQL注入",
-                    "detail_url": ""
-                }
-            }
-        },
-        {
             "group_name": "SSRF",
             "regex": "\\b(\\.setopt|\\.urlopen)\\(",
             "regex_flag": "ig",
@@ -1064,6 +1553,215 @@
                 "zh": {
                     "name": "SSRF",
                     "description": "可能导致SSRF",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "SQL select operation",
+            "regex": "\\bselect\\b",
+            "regex_flag": "ig",
+            "regex_match_cond": {
+                "context_aware_match":{
+                    "match_mode":"all",
+                    "context_aware_rules":{
+                        "anyKeyName1ofContext_aware_rules": {
+                            "range_begin":"0",
+                            "range_end":"4",
+                            "match_mode":"all",
+                            "cond_rules":{
+                                "anyKeyName1ofCond_rules":"\\bfrom\\b"
+                            },
+                            "cond_rules_flag":{
+                                "anyKeyName1ofCond_rules":"ig"
+                            }
+                        },
+                        "anyKeyName2ofContext_aware_rules": {
+                            "range_begin":"0",
+                            "range_end":"0",
+                            "match_mode":"!all",
+                            "cond_rules":{
+                                "anyKeyName1ofCond_rules":"#.*\\bselect\\b"
+                            },
+                            "cond_rules_flag":{
+                                "anyKeyName1ofCond_rules":"ig"
+                            }
+                        }                            
+                    }
+                }
+            },
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "SQL select operation",
+                    "description": "Can lead to SQL injection",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "SQL查询操作",
+                    "description": "可能导致SQL注入",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "SQL insert operation",
+            "regex": "\\binsert\\b",
+            "regex_flag": "ig",
+            "regex_match_cond": {
+                "context_aware_match":{
+                    "match_mode":"all",
+                    "context_aware_rules":{
+                        "anyKeyName1ofContext_aware_rules": {
+                            "range_begin":"0",
+                            "range_end":"0",
+                            "match_mode":"!all",
+                            "cond_rules":{
+                                "anyKeyName1ofCond_rules":"#.*\\binsert\\b"
+                            },
+                            "cond_rules_flag":{
+                                "anyKeyName1ofCond_rules":"ig"
+                            }
+                        },
+                        "anyKeyName2ofContext_aware_rules": {
+                            "range_begin":"0",
+                            "range_end":"4",
+                            "match_mode":"any",
+                            "cond_rules":{
+                                "anyKeyName1ofCond_rules":"\\binto\\b",
+                                "anyKeyName2ofCond_rules":"\\bvalues\\b"
+                            },
+                            "cond_rules_flag":{
+                                "anyKeyName1ofCond_rules":"ig",
+                                "anyKeyName2ofCond_rules":"ig"
+                            }
+                        }
+                    }
+                }
+            },
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "SQL insert operation",
+                    "description": "Can lead to SQL injection",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "SQL插入操作",
+                    "description": "可能导致SQL注入",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "SQL update operation",
+            "regex": "\\bupdate\\b",
+            "regex_flag": "ig",
+            "regex_match_cond": {
+                "context_aware_match":{
+                    "match_mode":"all",
+                    "context_aware_rules":{
+                        "anyKeyName1ofContext_aware_rules": {
+                            "range_begin":"0",
+                            "range_end":"4",
+                            "match_mode":"all",
+                            "cond_rules":{
+                                "anyKeyName1ofCond_rules":"\\bset\\b"
+                            },
+                            "cond_rules_flag":{
+                                "anyKeyName1ofCond_rules":"ig"
+                            }
+                        },
+                        "anyKeyName2ofContext_aware_rules": {
+                            "range_begin":"0",
+                            "range_end":"0",
+                            "match_mode":"!all",
+                            "cond_rules":{
+                                "anyKeyName1ofCond_rules":"#.*\\bupdate\\b"
+                            },
+                            "cond_rules_flag":{
+                                "anyKeyName1ofCond_rules":"ig"
+                            }
+                        }
+                    }
+                }
+            },
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "SQL update operation",
+                    "description": "Can lead to SQL injection",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "SQL更新操作",
+                    "description": "可能导致SQL注入",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "SQL delete operation",
+            "regex": "\\bdelete\\b",
+            "regex_flag": "ig",
+            "regex_match_cond": {
+                "context_aware_match":{
+                    "match_mode":"all",
+                    "context_aware_rules":{
+                        "anyKeyName1ofContext_aware_rules": {
+                            "range_begin":"0",
+                            "range_end":"4",
+                            "match_mode":"all",
+                            "cond_rules":{
+                                "anyKeyName1ofCond_rules":"\\bfrom\\b"
+                            },
+                            "cond_rules_flag":{
+                                "anyKeyName1ofCond_rules":"ig"
+                            }
+                        },
+                        "anyKeyName2ofContext_aware_rules": {
+                            "range_begin":"0",
+                            "range_end":"0",
+                            "match_mode":"!all",
+                            "cond_rules":{
+                                "anyKeyName1ofCond_rules":"#.*\\bdelete\\b"
+                            },
+                            "cond_rules_flag":{
+                                "anyKeyName1ofCond_rules":"ig"
+                            }
+                        }                         
+                    }
+                }
+            },
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "SQL delete operation",
+                    "description": "Can lead to SQL injection",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "SQL删除操作",
+                    "description": "可能导致SQL注入",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "General SQL CDAT operation",
+            "regex": "\\b(create|drop|alter|truncate)\\b.+\\b(index|table|database)\\b",
+            "regex_flag":"ig",
+            "regex_match_cond": {},
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "SQL create|drop|alter|truncate operation",
+                    "description": "Maybe lead SQL injection",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "SQL create|drop|alter|truncate操作",
+                    "description": "可能导致SQL注入",
                     "detail_url": ""
                 }
             }
@@ -1185,44 +1883,6 @@
             }
         },
         {
-            "group_name": "SQL injection",
-            "regex": "\\b(?:select|update|delete)\\s+.*(?:from|set).*where\\s+\\w+\\s*=[^\"']*(?:\"|').*(?:\\+|\\%s)",
-            "regex_flag": "ig",
-            "regex_match_cond": {},
-            "order": 1000,
-            "view_info": {
-                "en": {
-                    "name": "SQL injection",
-                    "description": "SQL statements are spliced, SQL injection vulnerabilities may exist",
-                    "detail_url": ""
-                },
-                "zh": {
-                    "name": "SQL注入漏洞",
-                    "description": "SQL语句存在拼接，可能存在SQL注入漏洞",
-                    "detail_url": ""
-                }
-            }
-        },
-        {
-            "group_name": "SQL injection",
-            "regex": "insert\\s{1,5}into\\s{1,5}.{1,100}\\+",
-            "regex_flag": "ig",
-            "regex_match_cond": {},
-            "order": 1000,
-            "view_info": {
-                "en": {
-                    "name": "SQL injection",
-                    "description": "SQL injection vulnerabilities may exist",
-                    "detail_url": ""
-                },
-                "zh": {
-                    "name": "SQL注入漏洞",
-                    "description": "SQL语句insert中可能存在SQL注入漏洞",
-                    "detail_url": ""
-                }
-            }
-        },
-        {
             "group_name": "SSRF",
             "regex": "\\b(getInputStream|executeMethod|execute|connect|HttpClient)\\(",
             "regex_flag": "ig",
@@ -1294,6 +1954,215 @@
                 "zh": {
                     "name": "XXE漏洞",
                     "description": "调用了XML相关函数，可能存在XXE漏洞",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "SQL select operation",
+            "regex": "\\bselect\\b",
+            "regex_flag": "ig",
+            "regex_match_cond": {
+                "context_aware_match":{
+                    "match_mode":"all",
+                    "context_aware_rules":{
+                        "anyKeyName1ofContext_aware_rules": {
+                            "range_begin":"0",
+                            "range_end":"4",
+                            "match_mode":"all",
+                            "cond_rules":{
+                                "anyKeyName1ofCond_rules":"\\bfrom\\b"
+                            },
+                            "cond_rules_flag":{
+                                "anyKeyName1ofCond_rules":"ig"
+                            }
+                        },
+                        "anyKeyName2ofContext_aware_rules": {
+                            "range_begin":"0",
+                            "range_end":"0",
+                            "match_mode":"!all",
+                            "cond_rules":{
+                                "anyKeyName1ofCond_rules":"#.*\\bselect\\b"
+                            },
+                            "cond_rules_flag":{
+                                "anyKeyName1ofCond_rules":"ig"
+                            }
+                        }                            
+                    }
+                }
+            },
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "SQL select operation",
+                    "description": "Can lead to SQL injection",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "SQL查询操作",
+                    "description": "可能导致SQL注入",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "SQL insert operation",
+            "regex": "\\binsert\\b",
+            "regex_flag": "ig",
+            "regex_match_cond": {
+                "context_aware_match":{
+                    "match_mode":"all",
+                    "context_aware_rules":{
+                        "anyKeyName1ofContext_aware_rules": {
+                            "range_begin":"0",
+                            "range_end":"0",
+                            "match_mode":"!all",
+                            "cond_rules":{
+                                "anyKeyName1ofCond_rules":"#.*\\binsert\\b"
+                            },
+                            "cond_rules_flag":{
+                                "anyKeyName1ofCond_rules":"ig"
+                            }
+                        },
+                        "anyKeyName2ofContext_aware_rules": {
+                            "range_begin":"0",
+                            "range_end":"4",
+                            "match_mode":"any",
+                            "cond_rules":{
+                                "anyKeyName1ofCond_rules":"\\binto\\b",
+                                "anyKeyName2ofCond_rules":"\\bvalues\\b"
+                            },
+                            "cond_rules_flag":{
+                                "anyKeyName1ofCond_rules":"ig",
+                                "anyKeyName2ofCond_rules":"ig"
+                            }
+                        }
+                    }
+                }
+            },
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "SQL insert operation",
+                    "description": "Can lead to SQL injection",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "SQL插入操作",
+                    "description": "可能导致SQL注入",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "SQL update operation",
+            "regex": "\\bupdate\\b",
+            "regex_flag": "ig",
+            "regex_match_cond": {
+                "context_aware_match":{
+                    "match_mode":"all",
+                    "context_aware_rules":{
+                        "anyKeyName1ofContext_aware_rules": {
+                            "range_begin":"0",
+                            "range_end":"4",
+                            "match_mode":"all",
+                            "cond_rules":{
+                                "anyKeyName1ofCond_rules":"\\bset\\b"
+                            },
+                            "cond_rules_flag":{
+                                "anyKeyName1ofCond_rules":"ig"
+                            }
+                        },
+                        "anyKeyName2ofContext_aware_rules": {
+                            "range_begin":"0",
+                            "range_end":"0",
+                            "match_mode":"!all",
+                            "cond_rules":{
+                                "anyKeyName1ofCond_rules":"#.*\\bupdate\\b"
+                            },
+                            "cond_rules_flag":{
+                                "anyKeyName1ofCond_rules":"ig"
+                            }
+                        }
+                    }
+                }
+            },
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "SQL update operation",
+                    "description": "Can lead to SQL injection",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "SQL更新操作",
+                    "description": "可能导致SQL注入",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "SQL delete operation",
+            "regex": "\\bdelete\\b",
+            "regex_flag": "ig",
+            "regex_match_cond": {
+                "context_aware_match":{
+                    "match_mode":"all",
+                    "context_aware_rules":{
+                        "anyKeyName1ofContext_aware_rules": {
+                            "range_begin":"0",
+                            "range_end":"4",
+                            "match_mode":"all",
+                            "cond_rules":{
+                                "anyKeyName1ofCond_rules":"\\bfrom\\b"
+                            },
+                            "cond_rules_flag":{
+                                "anyKeyName1ofCond_rules":"ig"
+                            }
+                        },
+                        "anyKeyName2ofContext_aware_rules": {
+                            "range_begin":"0",
+                            "range_end":"0",
+                            "match_mode":"!all",
+                            "cond_rules":{
+                                "anyKeyName1ofCond_rules":"#.*\\bdelete\\b"
+                            },
+                            "cond_rules_flag":{
+                                "anyKeyName1ofCond_rules":"ig"
+                            }
+                        }                         
+                    }
+                }
+            },
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "SQL delete operation",
+                    "description": "Can lead to SQL injection",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "SQL删除操作",
+                    "description": "可能导致SQL注入",
+                    "detail_url": ""
+                }
+            }
+        },
+        {
+            "group_name": "General SQL CDAT operation",
+            "regex": "\\b(create|drop|alter|truncate)\\b.+\\b(index|table|database)\\b",
+            "regex_flag":"ig",
+            "regex_match_cond": {},
+            "order": 1000,
+            "view_info": {
+                "en": {
+                    "name": "SQL create|drop|alter|truncate operation",
+                    "description": "Maybe lead SQL injection",
+                    "detail_url": ""
+                },
+                "zh": {
+                    "name": "SQL create|drop|alter|truncate操作",
+                    "description": "可能导致SQL注入",
                     "detail_url": ""
                 }
             }

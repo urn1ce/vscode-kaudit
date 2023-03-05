@@ -2,7 +2,7 @@
   "name": "kaudit",
   "displayName": "kaudit",
   "description": "a simple source code audit tool",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "publisher": "urn1ce",
   "license": "AGPL-3.0",
   "repository": {
