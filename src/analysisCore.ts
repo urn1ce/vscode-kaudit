@@ -31,14 +31,23 @@ export namespace Kaudit {
             Analysis.clean();
 
             // traverse -> match -> record
-            for (let i = 0; i < vscode.workspace.workspaceFolders.length; i++) {
-                // Obtain our workspace path.
-                const workspaceFolder = vscode.workspace.workspaceFolders[i].uri.fsPath;
-                await kutil.Kaudit.Helper.traverseRecursiveWithFilterAndHandler(workspaceFolder, new Map<any,any>() ,
-                    Analysis.analysisHandle,
-                    Analysis.anslysisFilter)
+            if(config.Kaudit.Config.analysisDirs.length == 0){
+                for (let i = 0; i < vscode.workspace.workspaceFolders.length; i++) {
+                    // Obtain our workspace path.
+                    const workspaceFolder = vscode.workspace.workspaceFolders[i].uri.fsPath;
+                    await kutil.Kaudit.Helper.traverseRecursiveWithFilterAndHandler(workspaceFolder, new Map<any,any>() ,
+                        Analysis.analysisHandle,
+                        Analysis.anslysisFilter)
+                }
+            }else{
+                // traverse custom dirs
+                for(let dir of config.Kaudit.Config.analysisDirs){
+                    await kutil.Kaudit.Helper.traverseRecursiveWithFilterAndHandler(dir, new Map<any,any>() ,
+                        Analysis.analysisHandle,
+                        Analysis.anslysisFilter)
+                }
             }
-
+            
             // sort
             Analysis.doSort();
 
@@ -67,7 +76,14 @@ export namespace Kaudit {
         private static async anslysisFilter(file_path:string, file_state:fs.Stats, shared_map:Map<any,any>):Promise<boolean> {
             //for dir, filter affect whether continue traverse dir and handle dir. false: traverse and handle, true: not traverse and not handle
             //for file, filter affect whether handle file. false: handle file, true: not handle file
-             
+            
+            // file_path could not in excludePatterns
+            for(let pat of config.Kaudit.Config.excludePatterns){
+                if(file_path.match(pat)){
+                    return true;
+                }
+            }
+
             // not follow symbolicLink
             if(file_state.isSymbolicLink()){
                 return true;

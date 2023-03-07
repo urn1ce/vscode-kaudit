@@ -1,4 +1,6 @@
+import { utils } from 'mocha';
 import * as vscode from 'vscode';
+import * as kutil from './util'
 
 export namespace Kaudit {
 
@@ -12,6 +14,8 @@ export namespace Kaudit {
         private static lang2ext:Map<string, string[]> = new Map<string, string[]>();
         public static disableDefaultRules = false;        
         public static customRulesRaw:any|undefined = undefined;//JSON Format
+        public static analysisDirs:string[] = [];
+        public static excludePatterns:RegExp[] = [];
 
         //refresh Config from UserSetting
         public static refreshConfigFromUserSetting(){
@@ -74,6 +78,30 @@ export namespace Kaudit {
                 Config.disableDefaultRules = true;
             }else{
                 Config.disableDefaultRules = false;
+            }
+
+            Config.analysisDirs = [];
+            let dirs:string|undefined = vscode.workspace.getConfiguration().get("conf.Kaudit.analysisDirs");
+            if(dirs && dirs.trim() !== ""){
+                for( let dir of dirs.split(",")){
+                    let index = dir.indexOf(':');
+                    if(index > 0){
+                        dir = dir.substring(0,index).toLocaleLowerCase() + dir.substring(index);
+                    }
+                    Config.analysisDirs.push(dir);
+                }
+            }
+
+            Config.excludePatterns = [];
+            let patterns:string|undefined = vscode.workspace.getConfiguration().get("conf.Kaudit.excludePatterns");
+            if(patterns && patterns.trim() !== ""){
+                for( let pattern of patterns.trim().split(",")){
+                    try{
+                        Config.excludePatterns.push(new RegExp(pattern,"ig"));
+                    }catch(e: any){
+                        kutil.Kaudit.Logger.error("please check your conf.Kaudit.excludePatterns," + e.toString());
+                    }
+                }
             }
         }
 

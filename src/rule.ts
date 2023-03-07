@@ -165,7 +165,11 @@ export namespace Kaudit {
                 RegRules.regRuleMap.clear();
                 //default Rules Handle
                 if(!config.Kaudit.Config.disableDefaultRules){
+                    let bakExcludePatterns = config.Kaudit.Config.excludePatterns;
+                    // when search rules,we did not need excludePatterns
+                    config.Kaudit.Config.excludePatterns = [];
                     kutil.Kaudit.Helper.traverseRecursiveWithFilterAndHandler(RegRules.default_config_path, RegRules.regRuleMap, RegRules.defaultRuleHandle);
+                    config.Kaudit.Config.excludePatterns = bakExcludePatterns;
                 }
                 //custom Rules Handle
                 if(config.Kaudit.Config.customRulesRaw){

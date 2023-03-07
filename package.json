@@ -148,6 +148,20 @@
             "order": 6,
             "description": "If a file lang can't determine by supportLangs extension, and file size <= checkFileLangOfFileSizeLimit, kaudit will check the first line of file to determine file lang(detail see enableAutoFileLangDetect). Default limit: 512*1024 bytes and only work on enableAutoFileLangDetect is true .",
             "scope": "application"
+          },
+          "conf.Kaudit.analysisDirs":{
+            "type": "string",
+            "default": "",
+            "order": 7,
+            "description": "Ignore default workspace dir and use abs dirs(dirs split by ,) here to analysis.Default is empty string, mean use default workspace dir.",
+            "scope": "application"
+          },
+          "conf.Kaudit.excludePatterns":{
+            "type": "string",
+            "default": "",
+            "order": 8,
+            "description": "Ignore files whose path match the excludePatterns(excludePatterns split by , and can use re - use str here to construct RegExp, ignore case).Default is empty string, mean no exclude files.Note you need pay attention to escape, e.g. \\\\tests\\\\ mean tests dir, and if error, may need restart vscode.",
+            "scope": "application"
           }
 				}
 			}

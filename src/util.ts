@@ -2,6 +2,7 @@ import * as vscode from "vscode";
 import * as path from "path";
 import * as util from "util";
 import * as fs from "fs";
+import * as config from "./config";
 
 export namespace Kaudit {
 
@@ -95,6 +96,13 @@ export namespace Kaudit {
                 //for dir, filter affect whether continue traverse dir and handle dir. false: traverse and handle, true: not traverse and not handle
                 //for file, filter affect whether handle file. false: handle file, true: not handle file
 
+                // file_path could not in excludePatterns
+                for(let pat of config.Kaudit.Config.excludePatterns){
+                    if(file_path.match(pat)){
+                        return true;
+                    }
+                }
+
                 // here a default handle                
                 // not follow symbolicLink
                 if(file_state.isSymbolicLink()){
@@ -105,6 +113,13 @@ export namespace Kaudit {
             
             let error: string = '';
             try{
+
+                // path_dir could not in excludePatterns
+                for(let pat of config.Kaudit.Config.excludePatterns){
+                    if(path_dir.match(pat)){
+                        return error;
+                    }
+                }
                 let files = await Helper.readdir(path_dir); 
                 if (files && files.length) {
                     for (let filename of files) {
