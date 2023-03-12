@@ -124,7 +124,7 @@
           "conf.Kaudit.customRules":{
             "type": "object",               
             "default":{},
-						"description": "you can define match rules by your self, the default rule see https://....., it's easy to understand and custom rules must follow the same format",
+						"description": "you can define match rules by your self, the default rule see https://github.com/urn1ce/vscode-kaudit, it's easy to understand, and custom rules must follow the same format",
             "order": 3,
             "scope": "application"
           },
