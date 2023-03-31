@@ -68,12 +68,18 @@ export namespace Kaudit {
                                 if(context_aware_rule[RegexMatchCond.range_begin] === undefined){
                                     kutil.Kaudit.Logger.error(`Rule ${rawRule.group_name} exist error, range_begin is not defined, treated as empty string(mean file begin), you must check rules`);                                   
                                 }else{
-                                    range_begin = context_aware_rule[RegexMatchCond.range_begin];
+                                    if(typeof context_aware_rule[RegexMatchCond.range_begin] === "number")
+                                        range_begin = context_aware_rule[RegexMatchCond.range_begin].toString();
+                                    else
+                                        range_begin = context_aware_rule[RegexMatchCond.range_begin];
                                 }
                                 if(context_aware_rule[RegexMatchCond.range_end] === undefined){
                                     kutil.Kaudit.Logger.error(`Rule ${rawRule.group_name} exist error, range_end is not defined, treated as empty string(mean file end), you must check rules`);
                                 }else{
-                                    range_end = context_aware_rule[RegexMatchCond.range_end];
+                                    if(typeof context_aware_rule[RegexMatchCond.range_end] === "number")
+                                        range_end = context_aware_rule[RegexMatchCond.range_end].toString();
+                                    else
+                                        range_end = context_aware_rule[RegexMatchCond.range_end];
                                 }
                                 if(range_begin.trim() == ""){
                                     range_begin = RegRule.rangeMin;
