@@ -2,7 +2,7 @@
   "name": "kaudit",
   "displayName": "kaudit",
   "description": "a simple source code audit tool",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "publisher": "urn1ce",
   "license": "AGPL-3.0",
   "repository": {
@@ -116,7 +116,7 @@
           },
           "conf.Kaudit.supportLangs": {
 						"type": "object",               
-            "default":{"java":["java"], "perl":["pl","pm"], "php":["php","php3","php4","php5","php6","php7","pht","phtml"], "python":["py"]},
+            "default":{"java":["java","jsp"], "perl":["pl","pm"], "php":["php","php3","php4","php5","php6","php7","pht","phtml"], "python":["py"]},
             "order": 2,
 						"description": "Support Langs that kaudit will handle,need reboot vscode if modified, lang key must from https://code.visualstudio.com/docs/languages/identifiers",
             "scope": "application"
@@ -149,18 +149,39 @@
             "description": "If a file lang can't determine by supportLangs extension, and file size <= checkFileLangOfFileSizeLimit, kaudit will check the first line of file to determine file lang(detail see enableAutoFileLangDetect). Default limit: 512*1024 bytes and only work on enableAutoFileLangDetect is true .",
             "scope": "application"
           },
+          "conf.Kaudit.maxOneLineLength": {
+            "type": "integer",
+            "default": 1024,
+            "order": 7,
+            "description": "Every line will do line=line.substring(0,maxOneLineLength), and then use truncated line to regex match.",
+            "scope": "application"
+          },
           "conf.Kaudit.analysisDirs":{
             "type": "string",
             "default": "",
-            "order": 7,
+            "order":8,
             "description": "Ignore default workspace dir and use abs dirs(dirs split by ,) here to analysis.Default is empty string, mean use default workspace dir.",
             "scope": "application"
           },
           "conf.Kaudit.excludePatterns":{
             "type": "string",
             "default": "",
-            "order": 8,
+            "order": 9,
             "description": "Ignore files whose path match the excludePatterns(excludePatterns split by , and can use re - use str here to construct RegExp, ignore case).Default is empty string, mean no exclude files.Note you need pay attention to escape, e.g. \\\\tests\\\\ mean tests dir, and if error, may need restart vscode.",
+            "scope": "application"
+          },
+          "conf.Kaudit.logLevel":{
+            "type": "string",
+            "enum": [
+              "error",
+							"warn",
+							"info",
+							"debug",
+              "trace"
+						],
+            "default":"info",
+            "order": 10,
+            "description": "Set log level, default is info",
             "scope": "application"
           }
 				}

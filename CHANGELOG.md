@@ -21,3 +21,8 @@ All notable changes to the "kaudit" extension will be documented in this file.
 ## [0.0.5 Release] - 2023-03-31
 
 * fix bug
+
+## [0.0.6 Release] - 2023-07-06
+
+* provide log level
+* provide maxOneLineLength option

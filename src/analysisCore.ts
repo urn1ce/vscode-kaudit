@@ -5,6 +5,7 @@ import * as kutil from "./util";
 import * as fs from "fs";
 import * as path from "path";
 import * as codeDiagnostics from "./codeDiagnostics"
+import { performance } from 'perf_hooks';
 
 export namespace Kaudit {
 
@@ -12,9 +13,12 @@ export namespace Kaudit {
 
         public static filePath2AnalysisRecords : Map<string, AnalysisRecord[]> = new Map<string, AnalysisRecord[]>();
         public static lang_groupName2AnalysisRecordsMap : Map<string, Map<string, AnalysisRecord[]>> = new Map<string,Map<string, AnalysisRecord[]>>();
+        public static analysisCountPerCalc = 0;
+        public static analysisCountAllCalc = 0;
 
         public static async analyze() : Promise<boolean> {
 
+            let analyzeStartTime = performance.now();
             // verify if there is a workspace folder open to analysis on
             if (!vscode.workspace.workspaceFolders || vscode.workspace.workspaceFolders.length === 0) {
                 kutil.Kaudit.Logger.warn('There are no open workspace folders !');
@@ -31,6 +35,7 @@ export namespace Kaudit {
             Analysis.clean();
 
             // traverse -> match -> record
+            kutil.Kaudit.Logger.show();
             if(config.Kaudit.Config.analysisDirs.length == 0){
                 for (let i = 0; i < vscode.workspace.workspaceFolders.length; i++) {
                     // Obtain our workspace path.
@@ -54,13 +59,15 @@ export namespace Kaudit {
             // statistic
             Analysis.doOutputStatistic();
 
-            kutil.Kaudit.Logger.debug("Analysis.analyze Finished");
-            kutil.Kaudit.Logger.show();
+            this.analysisCountAllCalc = this.analysisCountAllCalc + this.analysisCountPerCalc;
+            let analyzeEndTime = performance.now();
+            kutil.Kaudit.Logger.info("Analysis.analyze Finished " + (analyzeEndTime - analyzeStartTime) + "ms"  );
 
             return true;
         }
 
         private static initialize(){
+            this.analysisCountPerCalc = 0;
             //get usersettings
             config.Kaudit.Config.refreshConfigFromUserSetting();
             //force resfresh rules
@@ -164,6 +171,16 @@ export namespace Kaudit {
                         if(lines.length == 0){
                             kutil.Kaudit.Logger.trace(`AnalysisHandle Ignore - File Content empty pos2 ${file_path}`);
                             return mes;
+                        }else{
+                            let maxOneLineLength = config.Kaudit.Config.maxOneLineLength;
+                            for(let i=0; i<lines.length; i++){
+                                let line = lines[i];                                
+                                if(line.length > maxOneLineLength){
+                                    let oldLength = line.length;
+                                    lines[i] = line.substring(0, maxOneLineLength);
+                                    kutil.Kaudit.Logger.trace("Index " + i + " Line(" + oldLength + ") Of" + file_path + " Truncated ");
+                                }
+                            }
                         }
                     } catch(err) {
                         //safely ignore
@@ -183,12 +200,17 @@ export namespace Kaudit {
         }
 
         private static doMatch(file_lang:string , file_path:string, content:string, lines:string[],){
+            Analysis.analysisCountPerCalc++;
+            kutil.Kaudit.Logger.debug("Do Match - " + Analysis.analysisCountPerCalc + " " + file_path );
+            let doMatchStartTime = performance.now();
             var regRules = krule.Kaudit.RegRules.getOrderedRegexRules().get(file_lang);
             if(regRules){
                 let filepathAnalysisRecords: AnalysisRecord[] | undefined =  Analysis.filePath2AnalysisRecords.get(file_path);
                 let groupName2AnalysisRecordsMap = Analysis.lang_groupName2AnalysisRecordsMap.get(file_lang);
                 for (let i=0;i<lines.length;i++) {
+                    let oneLineStartTime = performance.now();
                     for(let rule of regRules){
+                        let startTime = performance.now();
                         let res = lines[i].match(rule.regex);
                         if(res && res.length > 0){
                             // check regex_match_cond
@@ -223,15 +245,35 @@ export namespace Kaudit {
                                         }
                                         groupnameAnalysisRecords.push(ar);
                                     }else{
-                                        kutil.Kaudit.Logger.trace(`doMatch - Can't find the math content from line ${i} of ${file_path}`);
+                                        kutil.Kaudit.Logger.trace(`doMatch - Can't find the macth content from line ${i} of ${file_path}`);
                                     }
                                 }
                             }
                         }
-                    }
+                        let endTime = performance.now();
+                        let elapsedTime = endTime - startTime;//ms
+                        if(elapsedTime > 1){
+                            kutil.Kaudit.Logger.debug("Do One Rule Match Time " + elapsedTime + "ms " + file_path + " " + (lines[i].length > 256?lines[i].substring(0,256)+"...":lines[i]) + JSON.stringify(rule,  (key, value)=>{
+                                if(value instanceof RegExp){
+                                    return value.toString();
+                                }
+                                return value;
+                            }, 4));
+                        }
+                    }     
+                    let oneLineEndTime = performance.now();   
+                    let oneLineElapsedTime = oneLineEndTime - oneLineStartTime;//ms     
+                    if(oneLineElapsedTime > 10){
+                        kutil.Kaudit.Logger.debug("Do One Line Match Time " + oneLineElapsedTime + "ms " + file_path + " " + (lines[i].length > 256?lines[i].substring(0,256)+"...":lines[i]));
+                    }       
                 }
             }else{
                 kutil.Kaudit.Logger.warn(`doMatch - Can't find ${file_lang} RegRules of ${file_path}`);
+            }
+            let doMatchEndTime = performance.now();
+            let doMatchElapsedTime = doMatchEndTime - doMatchStartTime;
+            if(doMatchElapsedTime > 1000){
+                kutil.Kaudit.Logger.debug("Do File Match Time " + doMatchElapsedTime + "ms " + file_path);
             }
         }
 
@@ -466,7 +508,9 @@ export namespace Kaudit {
         }
 
         private static doSort(){
-
+            
+            kutil.Kaudit.Logger.debug("Do Sort Begin");
+            let startTime = performance.now();
             for(let analysisRecords of Analysis.filePath2AnalysisRecords.values()){
                 // sort by line / column / order / regex
                 analysisRecords.sort(Analysis.sortByLineNumThanColumnThenOrderThanRegex);
@@ -478,6 +522,9 @@ export namespace Kaudit {
                     analysisRecords.sort(Analysis.sortByOrderThenFileNameThanMatchLineThanRegex);  
                 }
             }
+            let endTime = performance.now();
+            let elapsedTime = endTime - startTime;
+            kutil.Kaudit.Logger.debug("Do Sort Finish " + elapsedTime + "ms");
         }
 
         private static sortByLineNumThanColumnThenOrderThanRegex(a:AnalysisRecord ,b: AnalysisRecord){
@@ -567,6 +614,8 @@ export namespace Kaudit {
         private static doOutputStatistic(){
             //Statistic:
             //  for / lang num match success
+            kutil.Kaudit.Logger.debug("Do Output Statistic Begin");
+            let startTime = performance.now();
             for(let lang of config.Kaudit.Config.getSupportProgramLangs().keys()){
                 let groupName2AnalysisRecordsMap = Analysis.lang_groupName2AnalysisRecordsMap.get(lang);
                 if(groupName2AnalysisRecordsMap){
@@ -597,6 +646,9 @@ export namespace Kaudit {
                     kutil.Kaudit.Logger.info(`${lang} - Total ${count} ${lang} record match `);
                 }
             }
+            let endTime = performance.now();
+            let elapsedTime = endTime - startTime;
+            kutil.Kaudit.Logger.debug("Do Output Statistic " + elapsedTime + "ms");
         }
 
     }

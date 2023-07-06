@@ -3,6 +3,8 @@ import * as core from "./analysisCore"
 import * as path from "path";
 import * as config from "./config";
 import * as krule from "./rule";
+import * as kutil from "./util";
+import { performance } from 'perf_hooks';
 
 export namespace Kaudit {
 
@@ -110,6 +112,9 @@ export namespace Kaudit {
 
         public async refreshByCurrentAnalysisRecords(): Promise<void> {
             
+            kutil.Kaudit.Logger.debug("Do refreshByCurrentAnalysisRecords ");
+            let startTime = performance.now();
+            
             //clear
             this.rootNode.childNodes = [];
 
@@ -174,6 +179,10 @@ export namespace Kaudit {
             if(vscode.window.activeTextEditor){
                 ExplorerNodeDetailTreeDataProvider.explorerNodeDetailTreeDataProvider.refresh(vscode.window.activeTextEditor.document.uri);
             }
+
+            let endTime = performance.now();
+            let elapsedTime = endTime - startTime;
+            kutil.Kaudit.Logger.debug("Do refreshByCurrentAnalysisRecords " + elapsedTime + "ms");
 
         }        
 

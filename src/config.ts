@@ -8,6 +8,7 @@ export namespace Kaudit {
 
         // if no file extension and filesize <= checkFileLangOfFileSizeLimit, then try check file lang by first line with key php/java/python/perl check 
         public static checkFileLangOfFileSizeLimit:number = 512*1024;
+        public static maxOneLineLength = 1024;
         public static checkFileLangFirstLineLengthLimit:number = 256;//Temporarily 256 bytes, and  and cannot be configured on the config panel, maybe change in future
         public static enableAutoFileLangDetect:boolean = true;
         public static defaultLineSeparator = '\n'; //we don't consider mac style file by default now
@@ -25,6 +26,12 @@ export namespace Kaudit {
                 Config.checkFileLangOfFileSizeLimit = limit;
             }else{
                 Config.checkFileLangOfFileSizeLimit = 512*1024;
+            }
+            let moll:number|undefined = vscode.workspace.getConfiguration().get("conf.Kaudit.maxOneLineLength");
+            if(moll){
+                Config.maxOneLineLength = moll;
+            }else{
+                Config.maxOneLineLength = 1024;
             }
             let enable:boolean|undefined = vscode.workspace.getConfiguration().get("conf.Kaudit.enableAutoFileLangDetect");
             if(enable){
@@ -102,6 +109,29 @@ export namespace Kaudit {
                         kutil.Kaudit.Logger.error("please check your conf.Kaudit.excludePatterns," + e.toString());
                     }
                 }
+            }
+
+            let logLevel:string|undefined = vscode.workspace.getConfiguration().get("conf.Kaudit.logLevel");
+            if(logLevel){
+                switch(logLevel){
+                    case "error":
+                        kutil.Kaudit.Logger.logLevel = kutil.Kaudit.LoggerLevel.error;
+                        break;
+                    case "warn":
+                        kutil.Kaudit.Logger.logLevel = kutil.Kaudit.LoggerLevel.warn;
+                        break;
+                    case "info":
+                        kutil.Kaudit.Logger.logLevel = kutil.Kaudit.LoggerLevel.info;
+                        break;
+                    case "debug":
+                        kutil.Kaudit.Logger.logLevel = kutil.Kaudit.LoggerLevel.debug;
+                        break;
+                    case "trace":
+                        kutil.Kaudit.Logger.logLevel = kutil.Kaudit.LoggerLevel.trace;
+                        break;
+                }
+            }else{
+                kutil.Kaudit.Logger.logLevel = kutil.Kaudit.LoggerLevel.info;
             }
         }
 
