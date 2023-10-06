@@ -13,6 +13,7 @@ export namespace Kaudit {
         public static enableAutoFileLangDetect:boolean = true;
         public static defaultLineSeparator = '\n'; //we don't consider mac style file by default now
         private static lang2ext:Map<string, string[]> = new Map<string, string[]>();
+        public static lang2detectkey:Map<string, RegExp[]> = new Map<string, RegExp[]>();
         public static disableDefaultRules = false;        
         public static customRulesRaw:any|undefined = undefined;//JSON Format
         public static analysisDirs:string[] = [];
@@ -69,6 +70,25 @@ export namespace Kaudit {
                     }
                     if(arr.length > 0){
                         Config.lang2ext.set(key, arr);
+                    }
+                }
+            }
+
+            let l2dk:any = vscode.workspace.getConfiguration().get("conf.Kaudit.autoFileLangDetectKeyOfFirstLine");
+            Config.lang2detectkey.clear();
+            if(l2dk){
+                for(let key in l2dk){
+                    let list:string[]|undefined = l2dk[key];
+                    let arr:string[] = [];
+                    if(list){
+                        arr = list;
+                    }
+                    if(arr.length > 0){
+                        let regArr:RegExp[]  = []
+                        for (const dk of arr) {
+                            regArr.push(new RegExp(dk,"ig"));                            
+                        }
+                        Config.lang2detectkey.set(key, regArr);
                     }
                 }
             }

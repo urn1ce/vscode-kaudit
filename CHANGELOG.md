@@ -26,3 +26,7 @@ All notable changes to the "kaudit" extension will be documented in this file.
 
 * provide log level
 * provide maxOneLineLength option
+
+## [0.0.7 Release] - 2023-10-06
+
+* provide autoFileLangDetectKeyOfFirstLine option

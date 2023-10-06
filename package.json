@@ -2,7 +2,7 @@
   "name": "kaudit",
   "displayName": "kaudit",
   "description": "a simple source code audit tool",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "publisher": "urn1ce",
   "license": "AGPL-3.0",
   "repository": {
@@ -138,35 +138,42 @@
           "conf.Kaudit.enableAutoFileLangDetect":{
             "type":"boolean",
             "default":true,
-            "description": "When true, program first use fileExtension in supportLangs to determine fileLang, if no extension match then analysis if filesize <= checkFileLangOfFileSizeLimit, if true read first line(if lineLenth >= 256, only handle first 256bytes) of file judge if there is lang key(from supportLangs lang key) in line, if true, judge the file language as prev lang key and apply lang match rule,otherwise program will do nothing to the file.Often used in case that there are many cgi files(maybe perl/python/php.., we can't use extension to determine filetype).Default is true.Note: perhaps have little wrong with judge results because of judge method,but not too bad.Maybe new methods will be implemented in the future..",
+            "description": "When true, program first use fileExtension in supportLangs to determine fileLang, if no extension match then analysis if filesize <= checkFileLangOfFileSizeLimit, if true read first line(if lineLenth >= 256, only handle first 256bytes) of file and judge if there is a match of conf.Kaudit.autoFileLangDetectKeyOfFirstLine in line, if true, judge the file language by conf.Kaudit.autoFileLangDetectKeyOfFirstLine rule, otherwise program will do nothing to the file. Often used in case that there are many cgi files(maybe perl/python/php.., we can't use extension to determine filetype).Default is true.Note: perhaps have little wrong with judge results because of judge method,but not too bad.Maybe new methods will be implemented in the future..",
             "order": 5,
             "scope": "application"
           },
+          "conf.Kaudit.autoFileLangDetectKeyOfFirstLine": {
+						"type": "object",               
+            "default":{"csharp":["^\\s*?using.+?\\;"], "go":["^\\s*?package[^;]+?$"], "javascript":["^\\s*?import[^;]+from\\s+?.+", "javascript"], "python":["python","coding:","^\\s*?import\\s+?[^;]+","^\\s*?from[^;]+import\\s+?[^;]+"], "java":["java","jsp","^\\s*?package[^:;]+?\\;"], "php":["<\\?\\s*?php"], "perl":["perl","^\\s*?package.+?\\;"] },
+            "order": 6,
+						"description": "Define reg-expr that used to match first line when auto detect file lang, lang key must from https://code.visualstudio.com/docs/languages/identifiers.This way is a supplement to the conf.Kaudit.supportLangs and only affect when can't judge by conf.Kaudit.supportLangs and file suffix.The order of this config is important, left first.",
+            "scope": "application"
+					},
           "conf.Kaudit.checkFileLangOfFileSizeLimit":{
             "type": "integer",
             "default": 524288,
-            "order": 6,
+            "order": 7,
             "description": "If a file lang can't determine by supportLangs extension, and file size <= checkFileLangOfFileSizeLimit, kaudit will check the first line of file to determine file lang(detail see enableAutoFileLangDetect). Default limit: 512*1024 bytes and only work on enableAutoFileLangDetect is true .",
             "scope": "application"
           },
           "conf.Kaudit.maxOneLineLength": {
             "type": "integer",
             "default": 1024,
-            "order": 7,
+            "order": 8,
             "description": "Every line will do line=line.substring(0,maxOneLineLength), and then use truncated line to regex match.",
             "scope": "application"
           },
           "conf.Kaudit.analysisDirs":{
             "type": "string",
             "default": "",
-            "order":8,
+            "order":9,
             "description": "Ignore default workspace dir and use abs dirs(dirs split by ,) here to analysis.Default is empty string, mean use default workspace dir.",
             "scope": "application"
           },
           "conf.Kaudit.excludePatterns":{
             "type": "string",
             "default": "",
-            "order": 9,
+            "order": 10,
             "description": "Ignore files whose path match the excludePatterns(excludePatterns split by , and can use re - use str here to construct RegExp, ignore case).Default is empty string, mean no exclude files.Note you need pay attention to escape, e.g. \\\\tests\\\\ mean tests dir, and if error, may need restart vscode.",
             "scope": "application"
           },
@@ -180,7 +187,7 @@
               "trace"
 						],
             "default":"info",
-            "order": 10,
+            "order": 11,
             "description": "Set log level, default is info",
             "scope": "application"
           }

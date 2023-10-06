@@ -120,6 +120,8 @@ export namespace Kaudit {
                 let content:any | undefined = undefined;
                 let lines:string[] = [];
                 if(!filelang){// if undefined, try read first line to determine file lang; maybe oneday use file-type package to detect                  
+                    // no ext or ext not in config.Kaudit.Config.getExt2Lang() will go here
+                    // no ext will always try detect lang
                     let fileSize = file_state.size;
                     if (fileSize > config.Kaudit.Config.checkFileLangOfFileSizeLimit) {// if file size > checkFileLangOfFileSizeLimit(default 500k), ignore
                         kutil.Kaudit.Logger.trace(`AnalysisHandle Ignore - ${file_path} filesize > ${config.Kaudit.Config.checkFileLangOfFileSizeLimit} and can't determine filelang by extension`)
@@ -135,10 +137,19 @@ export namespace Kaudit {
                             if(firstLine.length > config.Kaudit.Config.checkFileLangFirstLineLengthLimit){
                                 firstLine = firstLine.substring(0,config.Kaudit.Config.checkFileLangFirstLineLengthLimit)
                             }
-                            for(let lang of config.Kaudit.Config.getSupportProgramLangs().keys()){
-                                if(firstLine.includes(lang)){
-                                    filelang = lang;
-                                    break;
+                            for(let lang of config.Kaudit.Config.lang2detectkey.keys()){
+                                let regArr = config.Kaudit.Config.lang2detectkey.get(lang)
+                                if(regArr){
+                                    for(let reg of regArr){
+                                        let res = firstLine.match(reg)
+                                        if(res && res.length > 0){
+                                            filelang = lang;
+                                            break;
+                                        }
+                                    }
+                                    if(filelang){
+                                        break;
+                                    }
                                 }
                             }
                             if(!filelang){
@@ -159,7 +170,7 @@ export namespace Kaudit {
                 if(!filelang){
                     kutil.Kaudit.Logger.error(`AnalysisHandle May Exist Bug - don't know reason why can't determine file lang`);
                     return mes;
-                } 
+                }
 
                 if(!content){
                     //here mean we never read content,try init content and lines
@@ -268,7 +279,7 @@ export namespace Kaudit {
                     }       
                 }
             }else{
-                kutil.Kaudit.Logger.warn(`doMatch - Can't find ${file_lang} RegRules of ${file_path}`);
+                kutil.Kaudit.Logger.debug(`doMatch - Can't find ${file_lang} RegRules of ${file_path}`);
             }
             let doMatchEndTime = performance.now();
             let doMatchElapsedTime = doMatchEndTime - doMatchStartTime;

@@ -114,26 +114,29 @@ export namespace Kaudit {
                                 if(context_aware_rule[RegexMatchCond.cond_rules]){
                                     let cond_rules = context_aware_rule[RegexMatchCond.cond_rules];                    
                                     for(let key_cond_rules in cond_rules){
-                                        let flag = "ig";
-                                        let check_flag = true;
+                                        let flag = "";// flag="ig" -> flag="", allow "" now
+                                        //let check_flag = true;
                                         if(context_aware_rule[RegexMatchCond.cond_rules_flag]){
                                             if(context_aware_rule[RegexMatchCond.cond_rules_flag][key_cond_rules]){
                                                 flag = context_aware_rule[RegexMatchCond.cond_rules_flag][key_cond_rules];
-                                            }else{
-                                                check_flag = false;
                                             }
-                                        }else{
-                                            check_flag = false;
+                                            //else{
+                                            //     check_flag = false;
+                                            // }
                                         }
-                                        if(!check_flag){
-                                            kutil.Kaudit.Logger.error(`Rule ${rawRule.group_name} exist error, ${key_cond_rules} doesn't exist regex flag in ${RegexMatchCond.cond_rules_flag}, program use the 'ig' temporarily, you must check rules`);
-                                        }
+                                        //else{
+                                        //     check_flag = false;
+                                        // }
+                                        // if(!check_flag){
+                                        //     kutil.Kaudit.Logger.debug(`Rule ${rawRule.group_name} exist error, ${key_cond_rules} doesn't exist regex flag in ${RegexMatchCond.cond_rules_flag}, program use the 'ig' temporarily, you must check rules`);
+                                        // }
                                         if(cond_rules[key_cond_rules]){
                                             new_cond_rules[key_cond_rules] = RegExp(cond_rules[key_cond_rules],flag);
-                                        }else{
-                                            kutil.Kaudit.Logger.error(`Rule ${rawRule.group_name} exist error, ${key_cond_rules} doesn't have value, program will skip it, you must check rules`);
-                                            continue;
                                         }
+                                        // else{
+                                        //     kutil.Kaudit.Logger.error(`Rule ${rawRule.group_name} exist error, ${key_cond_rules} doesn't have value, program will skip it, you must check rules`);
+                                        //     continue;
+                                        // }
                                     }                                     
                                 }
                                 context_aware_rule[RegexMatchCond.cond_rules] = new_cond_rules;
